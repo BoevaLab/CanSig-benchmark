@@ -1,0 +1,117 @@
+
+rule unintegrated:
+    input: rules.subsample.output
+    output: cfg.ROOT / "integration/unintegrated/{scenario}_{n_samples}_{random_seed}/latent.csv"
+    threads: 4
+    resources:
+        mem_mb=16000,
+    benchmark:
+        cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/unintegrated/integration.txt"
+    log: cfg.ROOT / "logs/meta_sigs/{scenario}_{n_samples}_{random_seed}/unintegrated/integration.txt"
+    shell:
+        """python scripts/metasigs/early_integration/unintegrated.py -i {input} -o {output} &> {log}"""
+
+
+rule harmony_integration:
+    input: rules.subsample.output
+    output: cfg.ROOT / "integration/{method}/{scenario}_{n_samples}_{random_seed}/latent.csv"
+    benchmark:
+        cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/{method}/integration.txt"
+    wildcard_constraints: method="harmony.*"
+    threads: 4
+    resources:
+        mem_mb=8000,
+    log:
+        cfg.ROOT / "logs/integration/{scenario}_{n_samples}_{random_seed}/{method}/integration.txt"
+    shell:
+        """python scripts/metasigs/early_integration/harmony_latent.py -i {input} -o {output} {params} &> {log}"""
+
+
+rule scvi_integration:
+    input: rules.subsample.output
+    output: cfg.ROOT / "integration/scvi/{scenario}_{n_samples}_{random_seed}/latent.csv"
+    benchmark:
+        cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/scvi/integration.txt"
+    threads: 4
+    resources:
+        slurm_partition="gpu",
+        mem_mb=8000,
+        slurm_extra="--gres gpu:1"
+    log:
+        cfg.ROOT / "logs/integration/{scenario}_{n_samples}_{random_seed}/scvi/integration.txt"
+    conda: "CanSig-python"
+    shell:
+        """python scripts/metasigs/early_integration/scvi_latent.py -i {input} -o {output} &> {log}"""
+
+
+rule bbknn_integration:
+    input: rules.subsample.output
+    output: cfg.ROOT / "integration/{method}/{scenario}_{n_samples}_{random_seed}/integration.npz"
+    benchmark:
+        cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/{method}/integration.txt"
+    wildcard_constraints: method="bbknn.*"
+    threads: 4
+    resources:
+        mem_mb=8000,
+    log:
+        cfg.ROOT /"logs/integration/{scenario}_{n_samples}_{random_seed}/{method}/integration.txt"
+    shell:
+        """python scripts/metasigs/early_integration/bbknn_latent.py -i {input} -o {output} &> {log}"""
+
+rule cca_integartion:
+    input: rules.convert_h5ad_to_rds.output
+    output: cfg.ROOT / "integration//{method}/{scenario}_{n_samples}_{random_seed}/integration.rds"
+    benchmark: cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/{method}/integration.txt"
+    wildcard_constraints: method="cca.*"
+    threads: 12
+    log: cfg.ROOT / "logs/integration/{scenario}_{n_samples}_{random_seed}/{method}/integration.txt"
+    conda: "CanSig-seurat"
+    shell:
+        """Rscript scripts/metasigs/early_integration/cca_integration.R -i {input} -o {output} &> {log}"""
+
+rule cca_signatures:
+    input: rules.cca_integartion.output
+    output: cfg.ROOT / "metasigs/{method}/{scenario}_{n_samples}_{random_seed}/{cluster}/metasigs.csv"
+    benchmark: cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/{method}/{cluster}.txt"
+    wildcard_constraints: method="cca.*"
+    threads: 4
+    log: cfg.ROOT / "logs/integration/{scenario}_{n_samples}_{random_seed}/{method}/{cluster}.txt"
+    conda: "CanSig-seurat"
+    shell:
+        """Rscript scripts/metasigs/early_integration/cca.R -i {input} -o {output} -n {wildcards.cluster} &> {log}"""
+
+
+rule get_signatures_latent:
+    input:
+        adata=rules.subsample.output,
+        latent= cfg.ROOT / "integration/{method}/{scenario}_{n_samples}_{random_seed}/latent.csv"
+    wildcard_constraints:
+        method="scvi.*|harmony.*|unintegrated.*"
+    output: cfg.ROOT / "metasigs/{method}/{scenario}_{n_samples}_{random_seed}/{cluster}/metasigs.csv"
+    params: cfg.get_options
+    threads: 4
+    resources:
+        mem_mb=16000,
+    benchmark:
+        cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/{method}/{cluster}.txt"
+    log: cfg.ROOT / "logs/meta_sigs/{scenario}_{n_samples}_{random_seed}/{method}/{cluster}.txt"
+    shell:
+        """python scripts/metasigs/early_integration/get_signatures.py -i {input.adata} -l {input.latent} -o {output} -n {wildcards.cluster} {params} &> {log}"""
+
+
+rule get_signatures_graph:
+    input:
+        adata=rules.subsample.output,
+        latent=rules.bbknn_integration.output
+    wildcard_constraints:
+        method="bbknn.*"
+    output: cfg.ROOT / "metasigs/{method}/{scenario}_{n_samples}_{random_seed}/{cluster}/metasigs.csv"
+    params: cfg.get_options
+    threads: 4
+    resources:
+        mem_mb=16000,
+    benchmark:
+        cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/{method}/{cluster}.txt"
+    log: cfg.ROOT / "logs/meta_sigs/{scenario}_{n_samples}_{random_seed}/{method}/{cluster}.txt"
+    shell:
+        """python scripts/metasigs/early_integration/get_signatures.py -i {input.adata} -l {input.latent} -o {output} -n {wildcards.cluster} {params} &> {log}"""

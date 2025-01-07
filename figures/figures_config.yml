@@ -1,0 +1,45 @@
+methods:
+  bbknn: BBKNN
+  harmony: Harmony
+  scvi: scVI
+  genenmf: GeneNMF
+  cca: CCA
+  cnmf: cNMF
+  unintegrated: Unintegr.
+  scalop: scalop
+  ldvae: "ldvae"
+  combat: "Combat"
+  scanorama: "Scanorama"
+  dhaka: "Dhaka"
+
+
+method_order: ["BBKNN", "Harmony", 'Combat', 'Scanorama', "CCA", "scVI", 'ldvae', 'Dhaka', "Unintegrated", "Unintegr.", "scalop", "GeneNMF"]
+
+method_colormap:
+  BBKNN: '#FF4433'
+  Harmony: '#e18632'
+  scVI: '#b59a32'
+  ldvae: '#8ba731'
+  Scanorama: '#32b258'
+  Dhaka: '#35ae95'
+  Combat: '#37abb2'
+  CCA: '#39a7d6'
+  Unintegrated: '#8f93f4'
+  Unintegr.: '#8f93f4'
+  scalop: '#db70f4'
+  GeneNMF: '#f667c6'
+
+
+
+datasets:
+  kim_lung: "Kim"
+  neftel_smartseq2_brain: "Neftel, SS2"
+  neftel_10x_brain: "Neftel, 10X"
+  wu_breast: "Wu"
+  ji_skin: "Ji"
+  vazquez_ovarian: "Vazques"
+  bischoff_lung: "Bischoff"
+  laughney_lung: "Laughney"
+  couturier_brain: "Couturier"
+  wang_brain: "Wang"
+  yuan_brain: "Yuan"

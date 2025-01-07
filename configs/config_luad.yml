@@ -1,0 +1,41 @@
+root: results/luad
+
+methods:
+  bbknn:
+  cca:
+  genenmf:
+  harmony:
+  unintegrated:
+  scvi:
+  scalop:
+
+
+scenarios:
+  kim_lung:
+    data_path: data/raw/Kim_lung.h5ad
+    signatures:
+      - kim_3
+      - luad_dev
+
+  bischoff_lung:
+    data_path: data/raw/Bischoff_lung.h5ad
+    signatures:
+      - kim_3
+      - luad_dev
+
+  laughney_lung:
+    data_path: data/raw/Laughney_lung.h5ad
+    signatures:
+      - kim_3
+      - luad_dev
+
+signatures:
+  luad_dev:
+    annotation_path: annotations/luad_dev.csv
+    scoring_scenario: laughney_lung
+    n_cluster: 6
+
+  kim_3:
+    annotation_path: annotations/kim_3.csv
+    scoring_scenario: kim_lung
+    n_cluster: 3

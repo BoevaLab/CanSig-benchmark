@@ -1,0 +1,14 @@
+jobs: 100
+cluster: >-
+    sbatch
+    --ntasks 1
+    --cpus-per-task {threads}
+    --mem {resources.mem_mb}
+    --time {resources.time}
+    --partition {resources.slurm_partition}
+    {resources.slurm_extra}
+default-resources:
+    - mem_mb=3850
+    - time="72:00:00"
+    - slurm_partition="compute"
+    - slurm_extra=""

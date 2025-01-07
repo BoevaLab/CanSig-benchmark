@@ -1,0 +1,23 @@
+root: results/scc
+
+methods:
+  bbknn:
+  harmony:
+  genenmf:
+  unintegrated:
+  scvi:
+  scalop:
+  cca:
+
+
+scenarios:
+  ji_skin:
+    data_path: data/raw/Ji_skin.h5ad
+    signatures:
+      - ji_3
+
+signatures:
+  ji_3:
+    annotation_path: annotations/ji_skin.csv
+    scoring_scenario: ji_skin
+    n_cluster: 3

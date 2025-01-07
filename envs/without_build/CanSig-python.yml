@@ -1,0 +1,13 @@
+name: CanSig-python
+channels:
+  - conda-forge
+dependencies:
+  - pytorch
+  - torchvision
+  - torchaudio
+  - pytorch-cuda==11.8
+  - scvi-tools
+  - scanpy
+  - ca-certificates
+  - certifi
+  - openssl

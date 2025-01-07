@@ -1,0 +1,44 @@
+root: results/debug
+
+
+methods:
+  bbknn:
+  genenmf:
+  harmony:
+  unintegrated:
+  scvi:
+  cca:
+  scalop:
+
+scenarios:
+  steele_pdac:
+    data_path: data/raw/Steele_pancreas.h5ad
+    signatures:
+      - pdac_dev
+
+  hwang_pdac:
+    data_path: data/raw/Hwang_pancreas.h5ad
+    signatures:
+      -  pdac_dev
+      -  pdac_dev_3
+
+signatures:
+  neftel_4:
+    annotation_path: annotations/Neftel_4.csv
+    scoring_scenario: neftel_smartseq2_brain
+    n_cluster: 4
+
+  neftel_6:
+    annotation_path: annotations/Neftel_6.csv
+    scoring_scenario: neftel_smartseq2_brain
+    n_cluster: 6
+
+  pdac_dev:
+    annotation_path: annotations/pdac_dev.csv
+    scoring_scenario: hwang_pdac
+    n_cluster: 6
+
+  pdac_dev_3:
+    annotation_path: annotations/pdac_dev.csv
+    scoring_scenario: hwang_pdac
+    n_cluster: 3

@@ -1,0 +1,27 @@
+root: results/ovarian
+
+methods:
+  unintegrated:
+  harmony:
+  bbknn:
+  scalop:
+  scvi:
+  genenmf:
+
+
+scenarios:
+  vazquez_ovarian:
+    data_path: "data/raw/vazquez_ovarian.h5ad"
+    preprocessing:
+      min_genes: 1000
+      max_pct_mt: 20
+    signatures:
+      - vazquez_6
+
+
+signatures:
+  vazquez_6:
+    annotation_path: annotations/vazquez_6.csv
+    scoring_path: data/preprocessed/vazquez_ovarian.h5ad
+    n_cluster: 6
+
