@@ -6,7 +6,7 @@
 CanSig can be downloaded directly from github.
 
 ```bash
-   git clone XXX
+   git clone https://github.com/BoevaLab/CanSig-benchmark.git
    cd CanSig-benchmark
 ``` 
 
