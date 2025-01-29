@@ -1,7 +1,6 @@
 # CanSig-benchmark
 
-
-
+Complete documentation and tutorials: https://boevalab.github.io/CanSig-benchmark/
 
 ## Running the benchmark
 ### Installing the enviorments
