@@ -3,6 +3,8 @@ data/
 annotations/
 figures/plots/
 docs/build
+lightning_logs/
+labels/
 
 .snakemake
 .cache
