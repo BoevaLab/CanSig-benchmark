@@ -1,5 +1,6 @@
 name: cansig-benchmark
 channels:
+  - bioconda
   - conda-forge
 dependencies:
   - _libgcc_mutex=0.1

@@ -1,5 +1,7 @@
 name: CanSig-python
 channels:
+  - pytorch
+  - nvidia
   - conda-forge
 dependencies:
   - pytorch

@@ -7,10 +7,23 @@ class ParsedConfig:
     def __init__(self, config):
         self.methods = config["methods"]
         self.ROOT = pathlib.Path(config["root"]).resolve()
-        self.signatures = config["signatures"]
         self.scenarios = config["scenarios"]
-        self.validate_scenarios()
-
+        if "signatures" in config:
+            self.signatures = config["signatures"]
+            self.validate_scenarios()
+        self.n_hvgs = config["n_hvgs"]
+        self.use_batch_key = config["batch_key"]
+        self.plotting = config.get("plotting", False)
+        if "random_seeds" in config:
+            self.random_seed = list(range(config["random_seeds"]))
+        else:
+            self.random_seed = [0]
+            
+        if "n_samples" in config:
+            self.n_samples = config["n_samples"]
+        else:
+            self.n_samples =  ["all"]
+        
     def validate_scenarios(self):
         for scenario in self.scenarios.values():
             for signature in scenario["signatures"]:
@@ -86,14 +99,11 @@ class ParsedConfig:
 
     def get_n_samples(self, wildcards) -> list:
         scenario = self.scenarios[wildcards.scenario]
-        if "n_samples" in scenario:
-            return scenario["n_samples"]
-        else:
-            return ["all"]
 
-    def get_random_seeds(self, wildcards) -> list:
-        scenario = self.scenarios[wildcards.scenario]
-        if "random_seeds" in scenario:
-            return list(range(scenario["random_seeds"]))
-        else:
-            return [0]
+
+
+        
+    def get_labels_path(self, wildcards):
+        if "labels_path" in self.scenarios[wildcards.scenario]:
+            return self.scenarios[wildcards.scenario]["labels_path"]
+        return None

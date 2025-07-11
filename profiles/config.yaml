@@ -9,6 +9,6 @@ cluster: >-
     {resources.slurm_extra}
 default-resources:
     - mem_mb=3850
-    - time="72:00:00"
+    - time="24:00:00"
     - slurm_partition="compute"
     - slurm_extra=""

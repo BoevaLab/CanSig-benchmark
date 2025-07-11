@@ -1,0 +1,10 @@
+results/
+data/
+annotations/
+figures/plots/
+docs/build
+
+.snakemake
+.cache
+.nv/
+__pycache__

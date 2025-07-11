@@ -1,0 +1,91 @@
+import itertools
+
+container: "docker://fbarkmann/cansig:base"
+localrules: eval, aggregate_signatures, aggregate_methods, corrs, marker_overlap, eval_overlap
+
+
+def get_data_path(wildcards):
+    if wildcards.type == "scrna":
+        return str(rules.preprocessing.output).format(scenario=cfg.get_scoring_scenario(wildcards))
+    elif wildcards.type == "bulk":
+        return cfg.get_bulk_path(wildcards)
+    else:
+        raise ValueError(f"Unknown type {wildcards.type}")
+
+
+rule corrs:
+    input:
+        signature=_SINGATURES_OUT,
+        annotation_path=cfg.get_annotation_path,
+        data_path= get_data_path
+    output: cfg.ROOT / "corrs/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{signature}/{cluster}/{n_hvg}/{batch_key}/corrs.csv"
+    wildcard_constraints:
+        type="bulk|scrna"
+    log: cfg.ROOT / "logs/metrics/corrs/{type}/{scenario}_{n_samples}_{random_seed}/{method}/{signature}/{cluster}/{n_hvg}/{batch_key}/log.txt"
+    shell: """python scripts/evaluate_signatures/corrs.py -i {input.signature} -o {output} \
+     --data-path {input.data_path} -a {input.annotation_path} --type {wildcards.type} &> {log}"""
+
+rule marker_overlap:
+    input:
+        signature=_SINGATURES_OUT,
+        annotation_path=cfg.get_annotation_path,
+        data_path= rules.preprocessing.output
+    output: cfg.ROOT / "{type}/{method}/{scenario}_{n_samples}_{random_seed}/{cluster}/{n_hvg}/{batch_key}/{signature}.csv"
+    wildcard_constraints:
+        type="overlap"
+    log:  cfg.ROOT / "log/overlap/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{signature}/{cluster}/{n_hvg}/{batch_key}/corrs.csv"
+    shell: """python scripts/evaluate_signatures/marker_overlap.py -i {input.signature} -o {output} \
+     --data-path {input.data_path} -a {input.annotation_path} &> {log}"""
+
+
+def get_cluster(wildcards):
+    min_cluster = cfg.get_n_cluster(wildcards)
+    clusters = list(range(min_cluster, min_cluster+3))
+    return expand(rules.corrs.output, cluster=clusters, allow_missing=True)
+
+def get_cluster_overlap(wildcards):
+    min_cluster = cfg.get_n_cluster(wildcards)
+    clusters = list(range(min_cluster, min_cluster+3))
+    return expand(rules.marker_overlap.output, cluster=clusters, allow_missing=True)
+
+rule eval:
+    input: get_cluster
+    output: cfg.ROOT / "scores/method/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
+    wildcard_constraints:
+        type="bulk|scrna"
+    log: cfg.ROOT / "logs/metrics/eval/{type}/{scenario}_{n_samples}_{random_seed}/{method}/{signature}/{n_hvg}/{batch_key}/log.txt"
+    shell: """python scripts/evaluate_signatures/eval.py -i {input} -o {output} &> {log}"""
+
+rule eval_overlap:
+    input: get_cluster_overlap
+    output: cfg.ROOT / "scores/method/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
+    wildcard_constraints:
+        type="overlap"
+    log: cfg.ROOT / "logs/metrics/eval/{type}/{scenario}_{n_samples}_{random_seed}/{method}/{signature}/{n_hvg}/{batch_key}/log.txt"
+    shell: """python scripts/evaluate_signatures/eval_overlap.py -i {input} -o {output} &> {log}"""
+
+rule aggregate_methods:
+    input: expand(rules.eval.output, method=cfg.get_methods(), allow_missing=True)
+    output: cfg.ROOT / "scores/scenario/{type}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
+    log: cfg.ROOT / "logs/metrics/aggregate_methods/{type}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}/log.txt"
+    shell: "python scripts/evaluate_signatures/aggregate_methods.py -i {input} -o {output} &> {log}"
+
+
+
+def get_signatures_type(wildcards):
+    signatures = cfg.get_signatures_for_scenario(wildcards)
+    random_seeds = cfg.random_seed
+    n_samples = cfg.n_samples
+    return expand(rules.aggregate_methods.output, itertools.product ,signature=signatures,
+    random_seed=random_seeds, n_samples=n_samples, allow_missing=True)
+
+
+rule aggregate_signatures:
+    input: get_signatures_type
+    output: cfg.ROOT / "scores/type/{type}/{scenario}/{n_hvg}/{batch_key}/signatures.csv"
+    wildcard_constraints:
+        type="scrna|bulk|overlap"
+    threads: 1
+    log: cfg.ROOT / "logs/metrics/aggreagtion/{type}/{scenario}/{n_hvg}/{batch_key}/log.txt"
+    shell:
+        "python scripts/evaluate_signatures/aggregate_signatures.py -i {input} -o {output} &> {log}"

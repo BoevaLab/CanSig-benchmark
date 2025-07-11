@@ -8,11 +8,15 @@ methods:
   scvi:
   scalop:
   cca:
+  mnc:
+  rpca:
+
 
 
 scenarios:
   ji_skin:
     data_path: data/raw/Ji_skin.h5ad
+    random_seeds: 5
     signatures:
       - ji_3
 

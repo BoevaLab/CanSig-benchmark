@@ -1,0 +1,50 @@
+rule preprocessing:
+    input: cfg.get_data_path,
+    output: cfg.ROOT / "data/preprocessed/{scenario}.h5ad"
+    log: cfg.ROOT / "logs/preprocessing/{scenario}.txt"
+    container: "docker://fbarkmann/cansig:base"
+    threads: 4
+    params:
+            excluded_samples=cfg.get_excluded_samples,
+            min_genes=cfg.get_min_genes,
+            max_pct_mt=cfg.get_max_pct_mt,
+            labels_path=cfg.get_labels_path
+    resources:
+        mem_mb=16000
+    shell:
+        """python scripts/preprocessing/preprocessing.py -i {input} -o {output} \
+         --excluded-sample {params.excluded_samples} \
+         --min-genes {params.min_genes} \
+         --max-pct-mt {params.max_pct_mt} \
+         --labels-path {params.labels_path} \
+         &> {log}"""
+
+rule subsample:
+    input: rules.preprocessing.output
+    output: cfg.ROOT / "data/preprocessed/{scenario}_{n_samples}_{random_seed}.h5ad"
+    container: "docker://fbarkmann/cansig:base"
+    log: cfg.ROOT / "logs/preprocessing/subsample_{scenario}_{n_samples}_{random_seed}.txt"
+    params:
+        n_hvgs=cfg.n_hvgs,
+        batch_keys=cfg.use_batch_key
+    shell:
+        """python scripts/preprocessing/subsample.py -i {input} \
+            -o {output} \
+            --n-samples {wildcards.n_samples} \
+            --random-seed {wildcards.random_seed} \
+            --n-hvgs {params.n_hvgs} \
+            --use-batch-key {params.batch_keys} \
+            &> {log}"""
+
+
+rule convert_h5ad_to_rds:
+    input: rules.subsample.output
+    output: cfg.ROOT / "data/preprocessed/{scenario}_{n_samples}_{random_seed}.rds"
+    log: cfg.ROOT / "logs/convert_h5ad_to_rds/{scenario}_{n_samples}_{random_seed}.txt"
+    threads: 4
+    container: "docker://fbarkmann/cansig:r"
+    resources:
+        mem_mb=8000
+    conda: "CanSig-R"
+    shell:
+        "Rscript scripts/preprocessing/convert_h5ad_to_rds.R -i {input} -o {output} &> {log}"

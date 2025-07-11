@@ -9,7 +9,7 @@ from os import PathLike
 from scipy.sparse import csr_matrix, diags
 from sklearn.utils import sparsefuncs
 from typing import Tuple, Literal, List, Optional
-
+import pandas as pd
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -49,6 +49,7 @@ def get_args() -> Namespace:
     parser.add_argument("--min-genes", type=int)
     parser.add_argument("--min-counts", type=int)
     parser.add_argument("--max-pct-mt", type=float, required=True)
+    parser.add_argument("--labels-path", type=pl.Path)
     return parser.parse_args()
 
 
@@ -131,7 +132,7 @@ def get_tpm_counts(input, count_type: str, technology: str) -> Tuple[csr_matrix,
         Tuple[csr_matrix, csr_matrix]: TPM values and count data
     """
     _LOGGER.info(f"Found {count_type} count type.")
-    if 'Exp_data_UMIcounts' == count_type:
+    if count_type in ['Exp_data_UMIcounts', "Exp_data_UMIcounts_10X"]:
         counts = input.copy()
         tpm = normalize(input)
         return tpm, counts
@@ -390,6 +391,16 @@ def score_cell_cycle(adata: anndata.AnnData) -> anndata.AnnData:
     sc.tl.score_genes_cell_cycle(adata, s_genes=s_genes, g2m_genes=g2m_genes)
     return adata
 
+def add_labels(adata, labels_path) -> sc.AnnData:
+    _LOGGER.info(f"Reading labels from {labels_path}")
+    labels = pd.read_csv(labels_path, index_col=0)
+    _LOGGER.info(f"Adding labels to {adata.n_obs} cells.")
+    adata.obs = adata.obs.merge(labels, how="left", left_index=True, right_index=True)
+    adata = adata[~adata.obs["celltype"].isna()].copy()
+    _LOGGER.info("Added labels to {adata.n_obs} cells.")
+    return adata
+    
+
 
 def make_datadir(output):
     output_path = pl.Path(output)
@@ -400,6 +411,10 @@ def main():
     args = get_args()
     make_datadir(args.output)
     adata = read_anndata(args.input)
+    print(args.labels_path)
+    if args.labels_path.name.endswith(".csv"):
+        adata = add_labels(adata, args.labels_path)
+        
     adata = preprocessing(adata, excluded_samples=args.excluded_sample, min_genes=args.min_genes,
                           max_pct_mt=args.max_pct_mt, min_counts=args.min_counts)
     write_anndata(adata, args.output)

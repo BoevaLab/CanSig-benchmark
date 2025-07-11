@@ -26,9 +26,6 @@ scenarios:
       - neftel_4
       - neftel_6
 
-
-
-
 signatures:
   neftel_4:
     annotation_path: annotations/Neftel_4.csv

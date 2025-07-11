@@ -1,64 +1,77 @@
-# Getting Started
+# Getting started
 
-## Downloading the package
+This repository provides two options for running the Snakemake pipeline: containers hosted on Docker Hub or Conda environments.
 
+## Option 1: Docker Images (Recommended)
 
-CanSig can be downloaded directly from github.
+### Environment Setup
 
-```bash
-   git clone https://github.com/BoevaLab/CanSig-benchmark.git
-   cd CanSig-benchmark
-``` 
-
-
-
-
-## Installing the enviorments
-
-This repository provides conda environments for reproducing our benchmarking. We provide two installation options for different reproducibility needs.
-
-**Option 1:** Exact Reproducibility
-Use environments from `envs/with_build/`:
+Install the base environment that includes Snakemake and Apptainer:
 
 ```bash
+conda env create -f envs/cansig.yml
+```
+Activate the base environment:
 
-   conda env create -f envs/with_build/CanSig-R.yml
-   conda env create -f envs/with_build/CanSig-python.yml
-   conda env create -f envs/with_build/cansig-benchmark.yml
+```bash
+conda activate cansig
 ```
 
-**Option 2:** Flexible installation
+### Running the Snakemake Pipeline
 
-Use environments from `envs/without_build/`:
-
-```bash
-
-   conda env create -f envs/without_build/CanSig-R.yml
-   conda env create -f envs/without_build/CanSig-python.yml
-   conda env create -f envs/without_build/cansig-benchmark.yml
-```
-
-The whole benchmark is run with the cansig-benchmark environment and snakemake activates the other environments. 
+Execute the pipeline using Apptainer containers:
 
 ```bash
-
-   conda activate cansig-benchmark
+snakemake --configfile <path_to_your_config> --sdm apptainer -c <number_of_cores>
 ```
 
-## Running the snakemake pipeline
+### Reproducing Paper Results
 
+To reproduce the results from the paper using Docker containers:
 
 ```bash
-
-   snakemake --configfile <path_to_your_config> -c <number_of_cores>
+snakemake --configfile config/config_gbm.yml --sdm apptainer -c <number_of_cores>
+snakemake --configfile config/config_breast.yml --sdm apptainer -c <number_of_cores>
+snakemake --configfile config/config_scc.yml --sdm apptainer -c <number_of_cores>
+snakemake --configfile config/config_luad.yml --sdm apptainer -c <number_of_cores>
 ```
-To reproduce the results from the paper run
+
+## Option 2: Conda Environments
+
+### Environment Setup
+
+Use the pre-configured environments from `envs/without_build/`:
 
 ```bash
-
-   snakemake --configfile config/config_gbm.yml -c <number_of_cores>
-   snakemake --configfile config/config_breast.yml -c <number_of_cores>
-   snakemake --configfile config/config_scc.yml -c <number_of_cores>
-   snakemake --configfile config/config_luad.yml -c <number_of_cores>
+conda env create -f envs/without_build/CanSig-R.yml
+conda env create -f envs/without_build/CanSig-python.yml
+conda env create -f envs/without_build/cansig-benchmark.yml
 ```
 
+If you have trouble installing the enviorments with fixed builds, we also provide just the versions at `envs/with_build/`.
+The entire benchmark runs within the `cansig-benchmark` environment, while Snakemake automatically activates the other environments as needed:
+
+```bash
+conda activate cansig-benchmark
+```
+
+### Running the Snakemake Pipeline
+
+Execute the pipeline with Conda environments:
+
+```bash
+snakemake --configfile <path_to_your_config> --use-conda -c <number_of_cores>
+```
+
+### Reproducing Paper Results
+
+To reproduce the results from the paper, run the following commands:
+
+```bash
+snakemake --configfile config/config_gbm.yml -c <number_of_cores>
+snakemake --configfile config/config_breast.yml -c <number_of_cores>
+snakemake --configfile config/config_scc.yml -c <number_of_cores>
+snakemake --configfile config/config_luad.yml -c <number_of_cores>
+```
+
+Replace `<number_of_cores>` with the desired number of CPU cores for parallel processing.

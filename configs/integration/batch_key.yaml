@@ -1,0 +1,42 @@
+root: results/integration/batch_key
+
+plotting: False
+
+n_hvgs:
+  - "4000"
+
+batch_key:
+  - True
+  - False
+
+methods:
+  cca:
+  unintegrated:
+  combat:
+  ldvae:
+  dhaka:
+  harmony:
+  scanorama:
+  scvi:
+  bbknn:
+  mnc:
+  rpca:
+
+random_seeds: 5
+n_samples: 
+  - 0.8
+
+
+scenarios:
+  ji_skin:
+    data_path: data/raw/Ji_skin.h5ad
+    labels_path: labels/Ji_skin.csv
+  kim_lung:
+    data_path: data/raw/Kim_lung.h5ad
+    labels_path: labels/kim_lung.csv
+  neftel_ss2:
+    data_path: data/raw/Neftel_brain_SmartSeq2.h5ad
+    labels_path: labels/neftel_ss2.csv
+  neftel_10x:
+    data_path: data/raw/Neftel_brain_10X.h5ad
+    labels_path: labels/neftel_10x.csv

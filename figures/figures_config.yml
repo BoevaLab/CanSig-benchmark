@@ -1,6 +1,8 @@
 methods:
   bbknn: BBKNN
   harmony: Harmony
+  harmony: Harmony
+  mnc: MNC
   scvi: scVI
   genenmf: GeneNMF
   cca: CCA
@@ -11,25 +13,42 @@ methods:
   combat: "Combat"
   scanorama: "Scanorama"
   dhaka: "Dhaka"
+  rpca: rPCA
 
 
-method_order: ["BBKNN", "Harmony", 'Combat', 'Scanorama', "CCA", "scVI", 'ldvae', 'Dhaka', "Unintegrated", "Unintegr.", "scalop", "GeneNMF"]
+method_order: ["BBKNN", "Harmony", 'Combat', 'Scanorama', "CCA", "rPCA", "MNC", "scVI", 'ldvae', 'Dhaka', "Unintegrated", "Unintegr.", "scalop", "GeneNMF"]
 
 method_colormap:
-  BBKNN: '#FF4433'
-  Harmony: '#e18632'
-  scVI: '#b59a32'
-  ldvae: '#8ba731'
-  Scanorama: '#32b258'
-  Dhaka: '#35ae95'
-  Combat: '#37abb2'
-  CCA: '#39a7d6'
-  Unintegrated: '#8f93f4'
-  Unintegr.: '#8f93f4'
-  scalop: '#db70f4'
-  GeneNMF: '#f667c6'
+  BBKNN: '#FF4433'        # Red
+  Harmony: '#e18632'       # Orange  
+  scVI: '#b59a32'          # Yellow-brown
+  ldvae: '#8ba731'         # Yellow-green
+  Scanorama: '#32b258'     # Green
+  Dhaka: '#35ae95'         # Teal
+  Combat: '#37abb2'        # Blue-green
+  CCA: '#39a7d6'           # Light blue
+  rPCA: '#1f77b4'          # Medium blue
+  MNC: '#9467bd'           # Purple-violet
+  Unintegrated: '#8f93f4'  # Purple-blue
+  Unintegr.: '#8f93f4'     # Purple-blue (same as Unintegrated)
+  scalop: '#db70f4'        # Bright purple
+  GeneNMF: '#f667c6'       # Pink
 
-
+method_markers:
+  BBKNN: 'o'              # circle
+  Harmony: 's'             # square
+  scVI: '^'                # triangle up
+  ldvae: 'v'               # triangle down
+  Scanorama: 'D'           # diamond
+  Dhaka: 'p'               # pentagon
+  Combat: 'h'              # hexagon
+  CCA: '*'                 # star
+  rPCA: '+'                # plus
+  MNC: 'x'                 # x
+  Unintegrated: '<'        # triangle left
+  Unintegr.: '<'           # triangle left (same as Unintegrated)
+  scalop: '>'              # triangle right
+  GeneNMF: 'd'             # thin diamond
 
 datasets:
   kim_lung: "Kim"

@@ -1,0 +1,45 @@
+root: results/debug
+
+n_hvgs:
+  - "4000"
+
+batch_key:
+  - True
+
+methods:
+  unintegrated:
+
+
+random_seeds: 1
+n_samples: all
+
+
+methods:
+  bbknn:
+  harmony:
+  unintegrated:
+  # scvi:
+  # scalop:
+  genenmf:
+  # cca:
+
+
+scenarios:
+  neftel_smartseq2_brain:
+    data_path: data/raw/Neftel_brain_SmartSeq2.h5ad
+    preprocessing:
+      min_genes: 3000
+      max_pct_mt: 20
+    signatures:
+      - neftel_4
+      - neftel_6
+
+signatures:
+  neftel_4:
+    annotation_path: annotations/neftel_4.csv
+    scoring_scenario: neftel_smartseq2_brain
+    n_cluster: 4
+  neftel_6:
+    annotation_path: annotations/neftel_6.csv
+    scoring_scenario: neftel_smartseq2_brain
+    n_cluster: 6

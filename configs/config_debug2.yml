@@ -1,0 +1,28 @@
+root: results/debug2
+
+methods:
+  unintegrated:
+  bbknn:
+  genenmf:
+  mnc:
+  scvi:
+  rpca:
+  cca:
+  harmony:
+  scalop:
+
+scenarios:
+  neftel_smartseq2_brain:
+    data_path: data/raw/Neftel_brain_SmartSeq2.h5ad
+    random_seeds: 2
+    preprocessing:
+      min_genes: 3000
+      max_pct_mt: 20
+    signatures:
+      - neftel_4
+
+signatures:
+  neftel_4:
+    annotation_path: annotations/neftel_4.csv
+    scoring_scenario: neftel_smartseq2_brain
+    n_cluster: 4

@@ -1,0 +1,138 @@
+rule integration_base:
+    input: 
+        rules.subsample.output
+    output: 
+        cfg.ROOT / "integration/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/latent.csv"
+    benchmark:
+        cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration.txt"
+    wildcard_constraints: 
+        method="test.*"
+    log:
+        cfg.ROOT / "logs/meta_sigs/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration.txt"
+    params: 
+        script=""
+    shell:
+        """python {params.script} \
+            -i {input} \
+            -o {output} \
+            -r {wildcards.random_seed} \
+            --n-hvg {wildcards.n_hvg} \
+            --batch-key {wildcards.batch_key} \
+            &> {log}"""
+
+use rule integration_base as unintegrated with:
+    threads: 4
+    container: "docker://fbarkmann/cansig:base"
+    wildcard_constraints: 
+        method="unintegrated.*"
+    params: 
+        script="scripts/integration/unintegrated.py"
+    resources:
+        mem_mb=16000
+
+use rule integration_base as combat_latent with:
+    threads: 4
+    container: "docker://fbarkmann/cansig:base"
+    wildcard_constraints: 
+        method="combat.*"
+    params: 
+        script="scripts/integration/combat_latent.py"
+    resources:
+        mem_mb=16000
+
+use rule integration_base as harmony_latent with:
+    wildcard_constraints: method="harmony.*"
+    container: "docker://fbarkmann/cansig:base"
+    threads: 4
+    resources:
+        mem_mb=8000,
+    params: 
+        script="scripts/integration/harmony_latent.py"
+
+
+use rule integration_base as scanorama_latent with:
+    wildcard_constraints: method="scanorama.*"
+    container: "docker://fbarkmann/cansig:base"
+    threads: 4
+    resources:
+        mem_mb=8000,
+    params: 
+        script="scripts/integration/scanorama_latent.py"
+
+use rule integration_base as mnc_integration with:
+    wildcard_constraints: method="mnc.*"
+    container: "docker://fbarkmann/cansig:python"
+    threads: 4
+    params:
+        script="scripts/integration/mnc_correct.py"
+    resources:
+        mem_mb=8000,
+
+use rule integration_base as scvi_integration with:  
+    wildcard_constraints: method="scvi.*"
+    threads: 4
+    container: "docker://fbarkmann/cansig:python"
+    params:
+        script="scripts/integration/scvi_latent.py"
+    resources:
+        slurm_partition="gpu",
+        mem_mb=8000,
+        gpu=1,
+        slurm_extra="--gres gpu:1"
+
+use rule scvi_integration as ldvae_integration with:  
+    wildcard_constraints: method="ldvae.*"
+    params:
+        script="scripts/integration/ldvae_latent.py"
+
+use rule scvi_integration as dhaka_integration with:  
+    wildcard_constraints: method="dhaka.*"
+    container: "docker://fbarkmann/cansig:dhaka"
+    params:
+        script="scripts/integration/dhaka_latent.py"
+
+use rule integration_base as bbknn_integration with:   
+    output: cfg.ROOT / "integration/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/latent.npz"
+    wildcard_constraints: method="bbknn.*"
+    container: "docker://fbarkmann/cansig:base"
+    threads: 4
+    params:
+        script="scripts/integration/bbknn_latent.py"
+    resources:
+        mem_mb=8000
+
+rule cca_latent:
+    input: 
+        rules.convert_h5ad_to_rds.output
+    output: 
+        cfg.ROOT / "integration/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/latent.{ext}"
+    container: "docker://fbarkmann/cansig:r"
+    benchmark:
+        cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration_{ext}.txt"
+    log:
+        cfg.ROOT / "logs/meta_sigs/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration_{ext}.txt"
+    wildcard_constraints: 
+        method="cca.*",
+        ext="csv|rds"
+    threads: 12
+    params: 
+        script="scripts/integration/seurat_integration.R",
+        method="cca"
+    shell:"""Rscript {params.script} \
+            -i {input} \
+            -o {output} \
+            -r {wildcards.random_seed} \
+            --type {params.method} \
+            --n-hvg {wildcards.n_hvg} \
+            --batch-key {wildcards.batch_key} \
+            &> {log}"""
+
+use rule cca_latent as rpca_latent with:
+    wildcard_constraints: 
+        method="rpca.*",
+        ext="csv|rds"
+    threads: 12
+    params: 
+        script="scripts/integration/seurat_integration.R",
+        method="rpca"
+

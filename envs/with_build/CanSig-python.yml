@@ -316,3 +316,4 @@ dependencies:
       - igraph==0.11.8
       - leidenalg==0.10.2
       - texttable==1.7.0
+      - snapatac2==2.8.0

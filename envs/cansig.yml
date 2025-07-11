@@ -1,0 +1,7 @@
+name: cansig
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - snakemake
+  - apptainer
