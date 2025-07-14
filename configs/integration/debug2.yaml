@@ -1,0 +1,22 @@
+root: results/integration/debug2
+
+plotting: True
+
+n_hvgs:
+  - "4000"
+
+batch_key:
+  - True
+
+methods:
+  unintegrated:
+  combat:
+  harmony:
+  bbknn:
+
+random_seeds: 1
+
+scenarios:
+  neftel_ss2:
+    data_path: data/raw/Neftel_brain_SmartSeq2.h5ad
+    labels_path: labels/neftel_ss2.csv

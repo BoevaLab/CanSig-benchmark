@@ -1,0 +1,24 @@
+root: results/integration/debug
+
+plotting: True
+
+n_hvgs:
+  - "4000"
+
+batch_key:
+  - True
+
+methods:
+  unintegrated:
+  combat:
+  harmony:
+  bbknn:
+
+random_seeds: 1
+
+
+
+scenarios:
+  vazquez_ovarian:
+    data_path: data/raw/vazquez_ovarian.h5ad
+    labels_path: labels/vazquez_ovarian.csv

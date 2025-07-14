@@ -6,7 +6,7 @@ SAMPLE <- "sample"
 
 run_integration <- function (data, type) {
   options(future.globals.maxSize = 8000 * 1024^2)
-  k.weight <- min(100, min(plyr::count(data@meta.data[SAMPLE])["freq"]))
+  k.weight <- min(100, min(plyr::count(data@meta.data[SAMPLE])["freq"])-5)
 
   batch_list = SplitObject(data, split.by = SAMPLE)
   features <- rownames(data)
@@ -22,6 +22,7 @@ run_integration <- function (data, type) {
     reduction = type,
     l2.norm = TRUE,
     dims = 1:30,
+    normalization.method = "LogNormalize",
     scale = FALSE,
     verbose = FALSE
   )
@@ -39,10 +40,8 @@ run_integration <- function (data, type) {
 }
 
 
-load_data <- function (data_path, n_hvg, batch_key){
+load_data <- function (data_path){
   sce <- readRDS(data_path)
-  features <- rownames(sce)[sce[["RNA"]]@meta.features[[paste0("highly_variable_", n_hvg, "_", batch_key)]]]
-  sce <- subset(sce, features=features)
 }
 
 option_list <- list(
@@ -55,7 +54,8 @@ option_list <- list(
 )
 opt <- parse_args(OptionParser(option_list=option_list))
 set.seed(opt$r)
-data <- load_data(data_path = opt$i, n_hvg=opt$n_hvg, batch_key=opt$batch_key)
+data <- load_data(data_path = opt$i)
+n_hvg=opt$n_hvg, batch_key=opt$batch_key
 data <- subset(data, subset = phase=="G1")
 integrated <- run_integration(data, type=opt$t)
 
