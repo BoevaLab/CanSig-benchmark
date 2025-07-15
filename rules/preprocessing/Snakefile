@@ -27,6 +27,8 @@ rule subsample:
     params:
         n_hvgs=cfg.n_hvgs,
         batch_keys=cfg.use_batch_key
+    resources:
+        mem_mb=16000
     shell:
         """python scripts/preprocessing/subsample.py -i {input} \
             -o {output} \
