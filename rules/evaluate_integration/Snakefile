@@ -2,7 +2,6 @@ rule eval_latent:
     input: latent=rules.unintegrated.output,
             data_path=rules.subsample.output
     output:
-        cluster=cfg.ROOT / "eval/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/cluster.csv",
         metrics=cfg.ROOT / "eval/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/metrics.csv",
         umap=cfg.ROOT / "plotting/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/umap.csv"
     wildcard_constraints:
@@ -12,13 +11,12 @@ rule eval_latent:
     log: cfg.ROOT /  "logs/eval/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}.txt"
     resources:
         mem_mb=8000
-    shell: "python scripts/evaluate_integration/eval.py --data-path {input.data_path} --latent {input.latent} --output-cluster {output.cluster} --output-metrics {output.metrics} --output-umap {output.umap} --plotting {cfg.plotting} &> {log}"
+    shell: "python scripts/evaluate_integration/eval.py --data-path {input.data_path} --latent {input.latent} --output {output.metrics} --output-umap {output.umap} --plotting {cfg.plotting} &> {log}"
 
 rule eval_graph:
     input: latent=rules.bbknn_integration.output,
             data_path=rules.subsample.output
     output:
-        cluster=cfg.ROOT /"eval/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/cluster.csv",
         metrics=cfg.ROOT /"eval/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/metrics.csv",
         umap = cfg.ROOT / "plotting/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/umap.csv"
     container: "docker://fbarkmann/cansig:base"
@@ -28,4 +26,4 @@ rule eval_graph:
         method="bbknn.*"
     resources:
         mem_mb=8000
-    shell: "python scripts/evaluate_integration/eval.py --data-path {input.data_path} --latent {input.latent} --output-cluster {output.cluster} --output-metrics {output.metrics} --output-umap {output.umap} --plotting {cfg.plotting}  &> {log}"
+    shell: "python scripts/evaluate_integration/eval.py --data-path {input.data_path} --latent {input.latent} --output {output.metrics} --output-umap {output.umap} --plotting {cfg.plotting}  &> {log}"

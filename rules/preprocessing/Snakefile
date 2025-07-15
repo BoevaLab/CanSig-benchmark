@@ -45,6 +45,5 @@ rule convert_h5ad_to_rds:
     container: "docker://fbarkmann/cansig:r"
     resources:
         mem_mb=8000
-    conda: "CanSig-R"
     shell:
         "Rscript scripts/preprocessing/convert_h5ad_to_rds.R -i {input} -o {output} &> {log}"
