@@ -1,0 +1,33 @@
+root: results/integration/batch_key
+
+plotting: False
+
+n_hvgs:
+  - "4000"
+
+batch_key:
+  - True
+  - False
+
+methods:
+  cca:
+  unintegrated:
+  combat:
+  ldvae:
+  dhaka:
+  harmony:
+  scanorama:
+  scvi:
+  bbknn:
+  mnc:
+  rpca:
+
+random_seeds: 5
+n_samples: 
+  - 0.8
+
+
+scenarios:
+  vazquez_ovarian:
+    data_path: data/raw/vazquez_ovarian.h5ad
+    labels_path: labels/vazquez_ovarian.csv
