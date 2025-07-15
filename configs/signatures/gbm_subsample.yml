@@ -1,5 +1,4 @@
-root: results/signatures/gbm
-
+root: results/signatures/gbm_subsample
 
 n_hvgs:
   - "4000"
@@ -8,19 +7,21 @@ batch_key:
   - True
 
 methods:
-  cca:
-  unintegrated:
-  combat:
-  ldvae:
-  dhaka:
-  harmony:
-  scanorama:
-  scvi:
   bbknn:
-  mnc:
-  rpca:
+  harmony:
+  genenmf:
+  unintegrated:
+  scvi:
+  scalop:
+  cca:
 
-random_seeds: 1
+n_samples:
+  - 5
+  - 10
+  - 15
+  - 20
+random_seeds: 10
+
 
 scenarios:
   neftel_smartseq2_brain:
@@ -30,14 +31,10 @@ scenarios:
       max_pct_mt: 20
     signatures:
       - neftel_4
+      - neftel_6
 
-  neftel_10x_brain:
-    data_path: data/raw/Neftel_brain_10X.h5ad
-    preprocessing:
-      min_genes: 1000
-      max_pct_mt: 20
-    signatures:
-      - neftel_4
+
+
 
 signatures:
   neftel_4:
@@ -45,4 +42,7 @@ signatures:
     scoring_scenario: neftel_smartseq2_brain
     n_cluster: 4
 
-
+  neftel_6:
+    annotation_path: annotations/neftel_6.csv
+    scoring_scenario: neftel_smartseq2_brain
+    n_cluster: 6

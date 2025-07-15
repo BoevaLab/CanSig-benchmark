@@ -273,7 +273,7 @@ def remove_samples(adata: anndata.AnnData) -> anndata.AnnData:
     obs_no_cc = obs[obs["phase"]=="G1"]
     cells_per_sample = obs_no_cc[SAMPLE].value_counts()
 
-    samples_to_keep = cells_per_sample[cells_per_sample > 100].index.tolist()
+    samples_to_keep = cells_per_sample[cells_per_sample > 50].index.tolist()
     adata = adata[adata.obs[SAMPLE].isin(samples_to_keep)].copy()
     _LOGGER.info(f"Removed {cells_per_sample.shape[0] - len(samples_to_keep)} of {cells_per_sample.shape[0]} samples.")
     return adata

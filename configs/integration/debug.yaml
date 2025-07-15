@@ -1,6 +1,5 @@
 root: results/integration/debug
 
-plotting: True
 
 n_hvgs:
   - "4000"

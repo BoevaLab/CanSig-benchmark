@@ -46,4 +46,4 @@ rule all:
             n_samples="all", 
             n_hvg=cfg.n_hvgs, 
             batch_key=cfg.use_batch_key
-        )
+        ) if cfg.plotting else []

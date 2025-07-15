@@ -9,10 +9,7 @@ batch_key:
   - True
 
 methods:
-  unintegrated:
-  combat:
-  harmony:
-  bbknn:
+  cca:
 
 random_seeds: 1
 
