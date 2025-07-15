@@ -2,6 +2,6 @@ jobs: 100
 executor: slurm
 default-resources:
     - mem_mb=3850
-    - runtime="12:00:00"
+    - runtime=720
     - slurm_partition="compute"
     - slurm_extra=""
