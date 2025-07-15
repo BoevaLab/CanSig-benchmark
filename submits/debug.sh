@@ -7,4 +7,4 @@
 #SBATCH --mem=8G
 
 
-srun snakemake  --use-singularity --singularity-args "--nv" --executor slurm  --configfile configs/integration/debug2.yaml -s integration.smk --keep-going
+srun snakemake  --use-singularity --singularity-args "\\-\\-nv" --executor slurm  --configfile configs/integration/debug2.yaml -s integration.smk --keep-going
