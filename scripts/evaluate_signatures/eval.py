@@ -54,9 +54,8 @@ def get_score(corr: pd.DataFrame, sig_gts: List[str], sig_names: List[str]) -> f
 def main() -> None:
     args = get_args()
     results = pd.DataFrame(index=["scores"])
-    for corr_path in args.input:
+    for n_cluster, corr_path in enumerate(args.input):
         corr_path = pathlib.Path(corr_path)
-        n_cluster = corr_path.parent.stem
         corr_df = pd.read_csv(corr_path, index_col=0)
         sig_type = corr_df.pop(_SIG_TYPE)
         gt_names = corr_df.index[sig_type==_GROUND_TRUTH].tolist()

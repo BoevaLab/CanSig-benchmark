@@ -1,13 +1,25 @@
-root: results/luad
+root: results/signatures/luad
+
+n_hvgs:
+  - "4000"
+
+batch_key:
+  - True
 
 methods:
-  bbknn:
   cca:
-  genenmf:
-  harmony:
   unintegrated:
+  combat:
+  ldvae:
+  dhaka:
+  harmony:
+  scanorama:
   scvi:
-  scalop:
+  bbknn:
+  mnc:
+  rpca:
+
+random_seeds: 5
 
 
 scenarios:

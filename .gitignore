@@ -5,6 +5,7 @@ figures/plots/
 docs/build
 lightning_logs/
 labels/
+TCGA_data/
 
 .snakemake
 .cache

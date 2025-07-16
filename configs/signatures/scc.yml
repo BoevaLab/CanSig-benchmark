@@ -1,15 +1,25 @@
-root: results/scc
+root: results/signatures/scc
+
+n_hvgs:
+  - "4000"
+
+batch_key:
+  - True
 
 methods:
-  bbknn:
-  harmony:
-  genenmf:
-  unintegrated:
-  scvi:
-  scalop:
   cca:
+  unintegrated:
+  combat:
+  ldvae:
+  dhaka:
+  harmony:
+  scanorama:
+  scvi:
+  bbknn:
   mnc:
   rpca:
+
+random_seeds: 5
 
 
 

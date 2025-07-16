@@ -16,7 +16,7 @@ methods:
   rpca: rPCA
 
 
-method_order: ["BBKNN", "Harmony", 'Combat', 'Scanorama', "CCA", "rPCA", "MNC", "scVI", 'ldvae', 'Dhaka', "Unintegrated", "Unintegr.", "scalop", "GeneNMF"]
+method_order: ['BBKNN', 'Harmony', 'scVI', 'MNC', 'ldvae', 'CCA', 'rPCA', 'Scanorama', 'Dhaka', 'Combat', "Unintegrated", "Unintegr.", "scalop", "GeneNMF"]
 
 method_colormap:
   BBKNN: '#FF4433'        # Red

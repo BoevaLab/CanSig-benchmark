@@ -1,0 +1,35 @@
+root: results/integration/n_hvgs
+
+
+n_hvgs:
+  - "2000"
+  - "4000"
+  - "6000"
+  - "10000"
+  - "15000"
+  - "all"
+
+batch_key:
+  - True
+
+methods:
+  cca:
+  unintegrated:
+  combat:
+  ldvae:
+  dhaka:
+  harmony:
+  scanorama:
+  scvi:
+  bbknn:
+  mnc:
+  rpca:
+
+random_seeds: 5
+n_samples: 
+  - 0.8
+
+scenarios:
+  neftel_ss2:
+    data_path: data/raw/Neftel_brain_SmartSeq2.h5ad
+    labels_path: labels/neftel_ss2.csv

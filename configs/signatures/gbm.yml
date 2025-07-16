@@ -10,17 +10,13 @@ batch_key:
 methods:
   cca:
   unintegrated:
-  combat:
   ldvae:
-  dhaka:
   harmony:
-  scanorama:
   scvi:
   bbknn:
   mnc:
-  rpca:
 
-random_seeds: 1
+random_seeds: 5
 
 scenarios:
   neftel_smartseq2_brain:

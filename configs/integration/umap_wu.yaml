@@ -1,0 +1,33 @@
+root: results/integration/umap
+
+plotting: True
+
+n_hvgs:
+  - "4000"
+
+batch_key:
+  - True
+
+methods:
+  cca:
+  unintegrated:
+  combat:
+  ldvae:
+  dhaka:
+  harmony:
+  scanorama:
+  scvi:
+  bbknn:
+  mnc:
+  rpca:
+
+random_seeds: 1
+
+
+scenarios:
+  wu_gm:
+    data_path: data/raw/Wu_breast.h5ad
+    labels_path: labels/wu_gm.csv
+  wu_subtype:
+    data_path: data/raw/Wu_breast.h5ad
+    labels_path: labels/wu_subtype.csv

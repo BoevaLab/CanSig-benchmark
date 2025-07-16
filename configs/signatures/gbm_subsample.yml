@@ -7,13 +7,13 @@ batch_key:
   - True
 
 methods:
-  bbknn:
-  harmony:
-  genenmf:
-  unintegrated:
-  scvi:
-  scalop:
   cca:
+  unintegrated:
+  ldvae:
+  harmony:
+  scvi:
+  bbknn:
+  mnc:
 
 n_samples:
   - 5

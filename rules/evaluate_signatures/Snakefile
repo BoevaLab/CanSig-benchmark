@@ -33,7 +33,7 @@ rule marker_overlap:
     output: cfg.ROOT / "{type}/{method}/{scenario}_{n_samples}_{random_seed}/{cluster}/{n_hvg}/{batch_key}/{signature}.csv"
     wildcard_constraints:
         type="overlap"
-    log:  cfg.ROOT / "log/overlap/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{signature}/{cluster}/{n_hvg}/{batch_key}/corrs.csv"
+    log:  cfg.ROOT / "logs/overlap/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{signature}/{cluster}/{n_hvg}/{batch_key}/corrs.csv"
     shell: """python scripts/evaluate_signatures/marker_overlap.py -i {input.signature} -o {output} \
      --data-path {input.data_path} -a {input.annotation_path} &> {log}"""
 

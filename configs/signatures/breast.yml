@@ -1,13 +1,21 @@
-root: results/breast
+root: results/signatures/breast
+
+n_hvgs:
+  - "4000"
+
+batch_key:
+  - True
 
 methods:
-  bbknn:
-  harmony:
-  genenmf:
-  unintegrated:
-  scvi:
-  scalop:
   cca:
+  unintegrated:
+  ldvae:
+  harmony:
+  scvi:
+  bbknn:
+  mnc:
+
+random_seeds: 5
 
 
 scenarios:

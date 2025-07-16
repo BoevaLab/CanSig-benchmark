@@ -31,9 +31,8 @@ def get_score(overlap: pd.DataFrame) -> float:
 def main() -> None:
     args = get_args()
     results = pd.DataFrame(index=["scores"])
-    for overlap_path in args.input:
+    for n_cluster, overlap_path in enumerate(args.input):
         overlap_path = pathlib.Path(overlap_path)
-        n_cluster = overlap_path.parent.stem
         overlap = pd.read_csv(overlap_path, index_col=0)
 
         score = get_score(overlap)
