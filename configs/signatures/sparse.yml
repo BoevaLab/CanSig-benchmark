@@ -15,8 +15,7 @@ methods:
   mnc:
   scalop:
   genenmf:
-  scvi:
-  ldvae:
+
 
 skip_preprocessing: True
 

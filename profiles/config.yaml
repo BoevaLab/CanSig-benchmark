@@ -1,18 +1,5 @@
 jobs: 100
-cluster:
-  mkdir -p logs/{rule} &&
-  sbatch
-    --partition={resources.partition}
-    --cpus-per-task={threads}
-    --mem={resources.mem_mb}
-    --job-name=smk-{rule}-{wildcards}
-    --output=logs/{rule}/{rule}-{wildcards}-%j.out
-    --error=logs/{rule}/{rule}-{wildcards}-.%j.err
-    --account=account
-    --ntasks=1
-    --nodes=1
-    --time={resources.runtime}
-    --parsable
+executor: slurm
 
 default-resources:
     - mem_mb=3850
