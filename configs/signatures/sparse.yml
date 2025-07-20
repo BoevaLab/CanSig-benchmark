@@ -20,6 +20,7 @@ scenarios:
     data_path: data/sparse/neftel_0.0_0.h5ad
     signatures:
       - neftel_4
+      
   neftel_smartseq2_0.5_0:
     data_path: data/sparse/neftel_0.5_0.h5ad
     signatures:
@@ -32,25 +33,6 @@ scenarios:
   
   neftel_smartseq2_0.9_0:
     data_path: data/sparse/neftel_0.9_0.h5ad
-    signatures:
-      - neftel_4
-  
-  neftel_smartseq2_0.0_0_unif:
-    data_path: data/sparse/neftel_0.0_0_unif.h5ad
-    signatures:
-      - neftel_4
-  neftel_smartseq2_0.5_0_unif:
-    data_path: data/sparse/neftel_0.5_0_unif.h5ad
-    signatures:
-      - neftel_4
-
-  neftel_smartseq2_0.75_0_unif:
-    data_path: data/sparse/neftel_0.75_0_unif.h5ad
-    signatures:
-      - neftel_4
-  
-  neftel_smartseq2_0.9_0_unif:
-    data_path: data/sparse/neftel_0.9_0_unif.h5ad
     signatures:
       - neftel_4
 
