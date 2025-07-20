@@ -3,7 +3,7 @@ rule preprocessing:
     output: cfg.ROOT / "data/preprocessed/{scenario}.h5ad"
     log: cfg.ROOT / "logs/preprocessing/{scenario}.txt"
     container: "docker://fbarkmann/cansig:base"
-    threads: 4
+    threads: 1
     params:
             excluded_samples=cfg.get_excluded_samples,
             min_genes=cfg.get_min_genes,
@@ -47,7 +47,7 @@ rule convert_h5ad_to_rds:
     input: rules.subsample.output
     output: cfg.ROOT / "data/preprocessed/{scenario}_{n_samples}_{random_seed}.rds"
     log: cfg.ROOT / "logs/convert_h5ad_to_rds/{scenario}_{n_samples}_{random_seed}.txt"
-    threads: 4
+    threads: 1
     container: "docker://fbarkmann/cansig:r"
     group: "preprocessing"
     resources:
