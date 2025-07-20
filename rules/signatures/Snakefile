@@ -18,6 +18,7 @@ rule get_signatures_r:
     wildcard_constraints: 
         method="cca.*|rpca*"
     threads: 4
+    group: "fast_integration"
     resources:
         mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     container: "docker://fbarkmann/cansig:r"
@@ -32,6 +33,7 @@ rule get_signatures_latent:
         latent=get_latent_path
     output: _SINGATURES_OUT
     benchmark: _SINGATURES_BENCHMARK
+    group: "fast_integration"
     wildcard_constraints:
         method="scvi.*|harmony.*|unintegrated.*|mnc.*|ldvae.*|combat.*|dhaka.*|scanorama.*|bbknn.*"
     threads: 4
