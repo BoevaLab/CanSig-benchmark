@@ -1,8 +1,8 @@
 import itertools
 
 container: "docker://fbarkmann/cansig:base"
-localrules: eval, aggregate_signatures, aggregate_methods, corrs, marker_overlap, eval_overlap
 
+localrules: aggregate_methods, aggregate_signatures
 
 def get_data_path(wildcards):
     if wildcards.type == "scrna":
@@ -19,6 +19,7 @@ rule corrs:
         annotation_path=cfg.get_annotation_path,
         data_path= get_data_path
     output: cfg.ROOT / "corrs/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{signature}/{cluster}/{n_hvg}/{batch_key}/corrs.csv"
+    group: "signature_eval"
     wildcard_constraints:
         type="bulk|scrna"
     log: cfg.ROOT / "logs/metrics/corrs/{type}/{scenario}_{n_samples}_{random_seed}/{method}/{signature}/{cluster}/{n_hvg}/{batch_key}/log.txt"
@@ -31,6 +32,7 @@ rule marker_overlap:
         annotation_path=cfg.get_annotation_path,
         data_path= rules.preprocessing.output
     output: cfg.ROOT / "{type}/{method}/{scenario}_{n_samples}_{random_seed}/{cluster}/{n_hvg}/{batch_key}/{signature}.csv"
+    group: "overlap_eval"
     wildcard_constraints:
         type="overlap"
     log:  cfg.ROOT / "logs/overlap/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{signature}/{cluster}/{n_hvg}/{batch_key}/corrs.csv"
@@ -51,6 +53,7 @@ def get_cluster_overlap(wildcards):
 rule eval:
     input: get_cluster
     output: cfg.ROOT / "scores/method/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
+    group: "signature_eval"
     wildcard_constraints:
         type="bulk|scrna"
     log: cfg.ROOT / "logs/metrics/eval/{type}/{scenario}_{n_samples}_{random_seed}/{method}/{signature}/{n_hvg}/{batch_key}/log.txt"
@@ -59,6 +62,7 @@ rule eval:
 rule eval_overlap:
     input: get_cluster_overlap
     output: cfg.ROOT / "scores/method/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
+    group: "overlap_eval"
     wildcard_constraints:
         type="overlap"
     log: cfg.ROOT / "logs/metrics/eval/{type}/{scenario}_{n_samples}_{random_seed}/{method}/{signature}/{n_hvg}/{batch_key}/log.txt"

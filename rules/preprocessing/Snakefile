@@ -12,6 +12,7 @@ rule preprocessing:
             skip_preprocessing=cfg.get_flat_skip_preprocessing
     resources:
         mem_mb=16000
+    group: "preprocessing"
     shell:
         """python scripts/preprocessing/preprocessing.py -i {input} -o {output} \
          --excluded-sample {params.excluded_samples} \
@@ -31,6 +32,7 @@ rule subsample:
         batch_keys=cfg.use_batch_key
     resources:
         mem_mb=16000
+    group: "preprocessing"
     shell:
         """python scripts/preprocessing/subsample.py -i {input} \
             -o {output} \
@@ -47,6 +49,7 @@ rule convert_h5ad_to_rds:
     log: cfg.ROOT / "logs/convert_h5ad_to_rds/{scenario}_{n_samples}_{random_seed}.txt"
     threads: 4
     container: "docker://fbarkmann/cansig:r"
+    group: "preprocessing"
     resources:
         mem_mb=8000
     shell:
