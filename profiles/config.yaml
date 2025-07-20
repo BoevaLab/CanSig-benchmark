@@ -13,6 +13,8 @@ cluster:
     --nodes=1
     --time={resources.runtime}
     --parsable
+    {resources.slurm_extra}
+
 default-resources:
     - mem_mb=3850
     - runtime=720
@@ -22,4 +24,4 @@ default-resources:
 group-components:
   - signature_eval=20
   - overlap_eval=20
-  - fast_integration=20
+  - fast_integration=25

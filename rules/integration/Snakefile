@@ -121,7 +121,7 @@ rule cca_latent:
         ext="csv|rds"
     threads: 6
     resources:
-        mem_mb= lambda x: min(128000, 48000 * cfg.get_mem_scaling(x))
+        mem_mb= lambda x: min(128000, 128000 * cfg.get_mem_scaling(x))
     params: 
         script="scripts/integration/seurat_integration.R",
         method="cca"
