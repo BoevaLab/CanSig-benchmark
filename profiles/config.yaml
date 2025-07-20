@@ -7,6 +7,6 @@ default-resources:
     - slurm_extra=""
 
 group-components:
-  - signature_eval=50
-  - overlap_eval=50
+  - signature_eval=10
+  - overlap_eval=10
   - fast_integration=10
