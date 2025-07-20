@@ -13,7 +13,6 @@ cluster:
     --nodes=1
     --time={resources.runtime}
     --parsable
-    {resources.slurm_extra}
 
 default-resources:
     - mem_mb=3850
