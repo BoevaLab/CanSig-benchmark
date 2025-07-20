@@ -254,6 +254,6 @@ scenarios:
 signatures:
   neftel_4:
     annotation_path: annotations/neftel_4.csv
-    scoring_scenario: neftel_smartseq2_0.0_0
+    scoring_scenario: neftel_0.0_0
     n_cluster: 4
 
