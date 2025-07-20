@@ -10,9 +10,7 @@ batch_key:
 methods:
   cca:
   unintegrated:
-  ldvae:
   harmony:
-  scvi:
   bbknn:
   mnc:
   scalop:
