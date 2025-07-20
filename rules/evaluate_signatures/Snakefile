@@ -80,6 +80,7 @@ rule aggregate_methods:
     input: expand(rules.eval.output, method=cfg.get_methods(), allow_missing=True)
     group: "aggregate"
     threads: 1
+    localrule: True
     resources:
         mem_mb=1024
     output: cfg.ROOT / "scores/scenario/{type}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
@@ -102,6 +103,7 @@ rule aggregate_signatures:
     wildcard_constraints:
         type="scrna|bulk|overlap"
     threads: 1
+    localrule: True
     resources:
         mem_mb=1024
     log: cfg.ROOT / "logs/metrics/aggreagtion/{type}/{scenario}/{n_hvg}/{batch_key}/log.txt"
