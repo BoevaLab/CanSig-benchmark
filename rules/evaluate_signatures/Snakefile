@@ -20,6 +20,8 @@ rule corrs:
         data_path= get_data_path
     output: cfg.ROOT / "corrs/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{signature}/{cluster}/{n_hvg}/{batch_key}/corrs.csv"
     group: "signature_eval"
+    resources:
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     wildcard_constraints:
         type="bulk|scrna"
     log: cfg.ROOT / "logs/metrics/corrs/{type}/{scenario}_{n_samples}_{random_seed}/{method}/{signature}/{cluster}/{n_hvg}/{batch_key}/log.txt"
@@ -33,6 +35,8 @@ rule marker_overlap:
         data_path= rules.preprocessing.output
     output: cfg.ROOT / "{type}/{method}/{scenario}_{n_samples}_{random_seed}/{cluster}/{n_hvg}/{batch_key}/{signature}.csv"
     group: "overlap_eval"
+    resources:
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     wildcard_constraints:
         type="overlap"
     log:  cfg.ROOT / "logs/overlap/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{signature}/{cluster}/{n_hvg}/{batch_key}/corrs.csv"
@@ -54,6 +58,8 @@ rule eval:
     input: get_cluster
     output: cfg.ROOT / "scores/method/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
     group: "signature_eval"
+    resources:
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     wildcard_constraints:
         type="bulk|scrna"
     log: cfg.ROOT / "logs/metrics/eval/{type}/{scenario}_{n_samples}_{random_seed}/{method}/{signature}/{n_hvg}/{batch_key}/log.txt"
@@ -63,6 +69,8 @@ rule eval_overlap:
     input: get_cluster_overlap
     output: cfg.ROOT / "scores/method/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
     group: "overlap_eval"
+    resources:
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     wildcard_constraints:
         type="overlap"
     log: cfg.ROOT / "logs/metrics/eval/{type}/{scenario}_{n_samples}_{random_seed}/{method}/{signature}/{n_hvg}/{batch_key}/log.txt"
@@ -73,7 +81,6 @@ rule aggregate_methods:
     output: cfg.ROOT / "scores/scenario/{type}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
     log: cfg.ROOT / "logs/metrics/aggregate_methods/{type}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}/log.txt"
     shell: "python scripts/evaluate_signatures/aggregate_methods.py -i {input} -o {output} &> {log}"
-
 
 
 def get_signatures_type(wildcards):

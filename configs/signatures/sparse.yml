@@ -18,7 +18,7 @@ random_seeds: 1
 scenarios:
   neftel_smartseq2_0.0_0:
     data_path: data/sparse/neftel_0.0_0.h5ad
-    mem_scaling: 0.01
+    mem_scaling: 0.25
     signatures:
       - neftel_4
 
