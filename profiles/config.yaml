@@ -3,5 +3,5 @@ executor: slurm
 default-resources:
     - mem_mb=3850
     - runtime=720
-    - slurm_partition="compute"
+    - partition="compute"
     - slurm_extra=""

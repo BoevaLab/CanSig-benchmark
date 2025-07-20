@@ -116,3 +116,6 @@ class ParsedConfig:
         if "labels_path" in self.scenarios[wildcards.scenario]:
             return self.scenarios[wildcards.scenario]["labels_path"]
         return None
+    
+    def get_mem_scaling(self, wildcards):
+        return self.scenarios[wildcards.scenario].get("mem_scaling", 1)
