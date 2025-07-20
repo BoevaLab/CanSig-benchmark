@@ -21,31 +21,31 @@ rule integration_base:
             &> {log}"""
 
 use rule integration_base as unintegrated with:
-    threads: 4
+    threads: 6
     container: "docker://fbarkmann/cansig:base"
     wildcard_constraints: 
         method="unintegrated.*"
     params: 
         script="scripts/integration/unintegrated.py"
     resources:
-        mem_mb=16000
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
 
 use rule integration_base as combat_latent with:
-    threads: 4
+    threads: 6
     container: "docker://fbarkmann/cansig:base"
     wildcard_constraints: 
         method="combat.*"
     params: 
         script="scripts/integration/combat_latent.py"
     resources:
-        mem_mb=16000
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
 
 use rule integration_base as harmony_latent with:
     wildcard_constraints: method="harmony.*"
     container: "docker://fbarkmann/cansig:base"
-    threads: 4
+    threads: 6
     resources:
-        mem_mb=8000,
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     params: 
         script="scripts/integration/harmony_latent.py"
 
@@ -53,30 +53,30 @@ use rule integration_base as harmony_latent with:
 use rule integration_base as scanorama_latent with:
     wildcard_constraints: method="scanorama.*"
     container: "docker://fbarkmann/cansig:base"
-    threads: 4
+    threads: 6
     resources:
-        mem_mb=8000,
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     params: 
         script="scripts/integration/scanorama_latent.py"
 
 use rule integration_base as mnc_integration with:
     wildcard_constraints: method="mnc.*"
     container: "docker://fbarkmann/cansig:python"
-    threads: 4
+    threads: 6
     params:
         script="scripts/integration/mnc_correct.py"
     resources:
-        mem_mb=8000,
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
 
 use rule integration_base as scvi_integration with:  
     wildcard_constraints: method="scvi.*"
-    threads: 4
+    threads: 6
     container: "docker://fbarkmann/cansig:python"
     params:
         script="scripts/integration/scvi_latent.py"
     resources:
         slurm_partition="gpu",
-        mem_mb=8000,
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x),
         gpu=1,
         slurm_extra="--gres gpu:1"
 
@@ -95,11 +95,11 @@ use rule integration_base as bbknn_integration with:
     output: cfg.ROOT / "integration/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/latent.npz"
     wildcard_constraints: method="bbknn.*"
     container: "docker://fbarkmann/cansig:base"
-    threads: 4
+    threads: 6
     params:
         script="scripts/integration/bbknn_latent.py"
     resources:
-        mem_mb=8000
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
 
 rule cca_latent:
     input: 
@@ -114,7 +114,9 @@ rule cca_latent:
     wildcard_constraints: 
         method="cca.*",
         ext="csv|rds"
-    threads: 12
+    threads: 6
+    resources:
+        mem_mb= lambda x: 16048 * cfg.get_mem_scaling(x)
     params: 
         script="scripts/integration/seurat_integration.R",
         method="cca"
@@ -131,7 +133,7 @@ use rule cca_latent as rpca_latent with:
     wildcard_constraints: 
         method="rpca.*",
         ext="csv|rds"
-    threads: 12
+    threads: 6
     params: 
         script="scripts/integration/seurat_integration.R",
         method="rpca"

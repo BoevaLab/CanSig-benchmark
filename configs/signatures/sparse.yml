@@ -18,21 +18,7 @@ random_seeds: 1
 scenarios:
   neftel_smartseq2_0.0_0:
     data_path: data/sparse/neftel_0.0_0.h5ad
-    signatures:
-      - neftel_4
-      
-  neftel_smartseq2_0.5_0:
-    data_path: data/sparse/neftel_0.5_0.h5ad
-    signatures:
-      - neftel_4
-
-  neftel_smartseq2_0.75_0:
-    data_path: data/sparse/neftel_0.75_0.h5ad
-    signatures:
-      - neftel_4
-  
-  neftel_smartseq2_0.9_0:
-    data_path: data/sparse/neftel_0.9_0.h5ad
+    mem_scaling: 0.01
     signatures:
       - neftel_4
 
@@ -43,9 +29,4 @@ signatures:
     annotation_path: annotations/neftel_4.csv
     scoring_scenario: neftel_smartseq2_0.0_0
     n_cluster: 4
-
-  neftel_6:
-    annotation_path: annotations/neftel_6.csv
-    scoring_scenario: neftel_smartseq2_0.0_0
-    n_cluster: 6
 

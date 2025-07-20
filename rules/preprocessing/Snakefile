@@ -11,7 +11,7 @@ rule preprocessing:
             labels_path=cfg.get_labels_path,
             skip_preprocessing=cfg.get_flat_skip_preprocessing
     resources:
-        mem_mb=16000
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     group: "preprocessing"
     shell:
         """python scripts/preprocessing/preprocessing.py -i {input} -o {output} \
@@ -31,7 +31,7 @@ rule subsample:
         n_hvgs=cfg.n_hvgs,
         batch_keys=cfg.use_batch_key
     resources:
-        mem_mb=16000
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     group: "preprocessing"
     shell:
         """python scripts/preprocessing/subsample.py -i {input} \
@@ -51,6 +51,6 @@ rule convert_h5ad_to_rds:
     container: "docker://fbarkmann/cansig:r"
     group: "preprocessing"
     resources:
-        mem_mb=8000
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     shell:
         "Rscript scripts/preprocessing/convert_h5ad_to_rds.R -i {input} -o {output} &> {log}"

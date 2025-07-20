@@ -18,6 +18,8 @@ rule get_signatures_r:
     wildcard_constraints: 
         method="cca.*|rpca*"
     threads: 4
+    resources:
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     container: "docker://fbarkmann/cansig:r"
     log: _SINGATURES_LOG
     conda: "CanSig-seurat"
@@ -36,7 +38,7 @@ rule get_signatures_latent:
     container: "docker://fbarkmann/cansig:base"
     log: _SINGATURES_LOG
     resources:
-        mem_mb=16000
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     shell: "python scripts/signatures/early_integration/get_signatures.py -i {input.adata} -l {input.latent} -o {output} -n {wildcards.cluster} -r {wildcards.random_seed} &> {log}"
 
 rule genenmf_integration:
@@ -48,9 +50,7 @@ rule genenmf_integration:
     container: "docker://fbarkmann/cansig:r"
     wildcard_constraints: method="genenmf.*"
     resources:
-        slurm_partition="compute",
-        mem_mb=8000,
-        slurm_extra=""
+        mem_mb= lambda x: 8096 * cfg.get_mem_scaling(x),
     log:
         cfg.ROOT / "logs/integration/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration.txt"
     shell:
@@ -60,9 +60,11 @@ rule genenmf:
     input: rules.genenmf_integration.output
     output: _SINGATURES_OUT
     log: _SINGATURES_LOG
-    threads: 3
+    threads: 4
     container: "docker://fbarkmann/cansig:r"
     wildcard_constraints: method="genenmf.*"
+    resources:
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     benchmark: _SINGATURES_BENCHMARK
     shell:
         """Rscript scripts/signatures/genenmf/genenmf.R -i {input} -o {output} -n {wildcards.cluster} -r {wildcards.random_seed} &> {log}"""
@@ -77,9 +79,7 @@ rule scalop_integration:
     wildcard_constraints:
         method="scalop.*"
     resources:
-        slurm_partition="compute",
-        mem_mb=8000,
-        slurm_extra=""
+        mem_mb= lambda x: 8096 * cfg.get_mem_scaling(x)
     log:
         cfg.ROOT / "logs/integration/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration.txt"
     shell:
@@ -89,11 +89,13 @@ rule scalop:
     input: rules.scalop_integration.output
     output: _SINGATURES_OUT
     log: _SINGATURES_LOG
-    threads: 3
+    threads: 4
     container: "docker://fbarkmann/cansig:r"
     wildcard_constraints:
         method="scalop.*"
     benchmark: _SINGATURES_BENCHMARK
+    resources:
+        mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     conda: "CanSig-R"
     shell:
         """Rscript scripts/signatures/scalop/scalop.R -i {input} -o {output} -n {wildcards.cluster} -r {wildcards.random_seed} &> {log}"""
