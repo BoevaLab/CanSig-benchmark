@@ -23,6 +23,7 @@ rule integration_base:
 use rule integration_base as unintegrated with:
     threads: 6
     container: "docker://fbarkmann/cansig:base"
+    group: "fast_integration"
     wildcard_constraints: 
         method="unintegrated.*"
     params: 
@@ -33,6 +34,7 @@ use rule integration_base as unintegrated with:
 use rule integration_base as combat_latent with:
     threads: 6
     container: "docker://fbarkmann/cansig:base"
+    group: "fast_integration"
     wildcard_constraints: 
         method="combat.*"
     params: 
@@ -43,6 +45,7 @@ use rule integration_base as combat_latent with:
 use rule integration_base as harmony_latent with:
     wildcard_constraints: method="harmony.*"
     container: "docker://fbarkmann/cansig:base"
+    group: "fast_integration"
     threads: 6
     resources:
         mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
@@ -53,6 +56,7 @@ use rule integration_base as harmony_latent with:
 use rule integration_base as scanorama_latent with:
     wildcard_constraints: method="scanorama.*"
     container: "docker://fbarkmann/cansig:base"
+    group: "fast_integration"
     threads: 6
     resources:
         mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
@@ -62,6 +66,7 @@ use rule integration_base as scanorama_latent with:
 use rule integration_base as mnc_integration with:
     wildcard_constraints: method="mnc.*"
     container: "docker://fbarkmann/cansig:python"
+    group: "fast_integration"
     threads: 6
     params:
         script="scripts/integration/mnc_correct.py"
