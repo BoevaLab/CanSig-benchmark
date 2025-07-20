@@ -200,16 +200,17 @@ def corr_signatures(df: pd.DataFrame, gt_names: List[str],  meta_sigs_names: Lis
 def main() -> None:
     args = get_args()
     gt_sigs = pd.read_csv(args.annotation_path)
-    meta_sigs = pd.read_csv(args.input)
+    signatures = pd.read_csv(args.input)
+    signatures = signatures.dropna(axis=1, how="all")
 
     if args.type.lower() == "scrna":
         adata = get_adata(args.data_path)
-        gt_names, meta_sigs_names, scores = get_scores(adata, gt_sigs, meta_sigs)
+        gt_names, meta_sigs_names, scores = get_scores(adata, gt_sigs, signatures)
     elif args.type.lower() == "bulk":
         bulk_data = pd.read_csv(args.data_path, index_col=0)
         gt_names, meta_sigs_names, scores = score_dataset(bulk_data=bulk_data,
                                truesignature=gt_sigs,
-                               metasignature=meta_sigs)
+                               metasignature=signatures)
     else:
         raise ValueError(f"Unkown scoring type {args.type}.")
 

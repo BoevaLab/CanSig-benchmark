@@ -8,7 +8,8 @@ rule preprocessing:
             excluded_samples=cfg.get_excluded_samples,
             min_genes=cfg.get_min_genes,
             max_pct_mt=cfg.get_max_pct_mt,
-            labels_path=cfg.get_labels_path
+            labels_path=cfg.get_labels_path,
+            skip_preprocessing=cfg.get_flat_skip_preprocessing
     resources:
         mem_mb=16000
     shell:
@@ -17,6 +18,7 @@ rule preprocessing:
          --min-genes {params.min_genes} \
          --max-pct-mt {params.max_pct_mt} \
          --labels-path {params.labels_path} \
+         {params.skip_preprocessing} \
          &> {log}"""
 
 rule subsample:

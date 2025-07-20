@@ -50,6 +50,7 @@ def get_args() -> Namespace:
     parser.add_argument("--min-counts", type=int)
     parser.add_argument("--max-pct-mt", type=float, required=True)
     parser.add_argument("--labels-path", type=pl.Path)
+    parser.add_argument('--skip-preprocessing', action='store_true',)
     return parser.parse_args()
 
 
@@ -414,8 +415,11 @@ def main():
     print(args.labels_path)
     if args.labels_path.name.endswith(".csv"):
         adata = add_labels(adata, args.labels_path)
-        
-    adata = preprocessing(adata, excluded_samples=args.excluded_sample, min_genes=args.min_genes,
+    
+    if args.skip_preprocessing:
+        _LOGGER.info("Skipping preprocessing.")
+    else:
+        adata = preprocessing(adata, excluded_samples=args.excluded_sample, min_genes=args.min_genes,
                           max_pct_mt=args.max_pct_mt, min_counts=args.min_counts)
     write_anndata(adata, args.output)
 

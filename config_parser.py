@@ -23,6 +23,8 @@ class ParsedConfig:
             self.n_samples = config["n_samples"]
         else:
             self.n_samples =  ["all"]
+            
+        self.skip_preprocessing = config.get("skip_preprocessing", False)
         
     def validate_scenarios(self):
         for scenario in self.scenarios.values():
@@ -38,6 +40,11 @@ class ParsedConfig:
             return self.scenarios[wildcards.scenario]["preprocessing"]
         return {}
 
+    def get_flat_skip_preprocessing(self, wildcards):
+        if self.skip_preprocessing:
+            return "--skip-preprocessing"
+        return ""
+    
     def get_excluded_samples(self, wildcards):
         config = self.get_preprocessing_dict(wildcards)
         return config.get("excluded_samples", None)
@@ -68,6 +75,7 @@ class ParsedConfig:
     def get_data_path(self, wildscards):
         if wildscards.scenario in self.get_scenarios():
             return self.scenarios[wildscards.scenario]["data_path"]
+    
     def get_methods(self):
         return list(self.methods.keys())
     
@@ -99,9 +107,10 @@ class ParsedConfig:
 
     def get_n_samples(self, wildcards) -> list:
         scenario = self.scenarios[wildcards.scenario]
-
-
-
+        if "n_samples" in scenario:
+            return scenario["n_samples"]
+        else:
+            return ["all"]
         
     def get_labels_path(self, wildcards):
         if "labels_path" in self.scenarios[wildcards.scenario]:

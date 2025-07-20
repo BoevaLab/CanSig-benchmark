@@ -14,6 +14,8 @@ methods:
   scvi:
   bbknn:
   mnc:
+  scalop:
+  genenmf:
 
 random_seeds: 5
 

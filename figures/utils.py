@@ -1,7 +1,10 @@
 import pathlib
+from matplotlib.patches import Rectangle
 import numpy as np
 import pandas as pd
-
+import matplotlib.pyplot as plt
+import seaborn as sns
+from itertools import product
 
 _SIG_TYPE = "signature_type"
 _META_SIG = "meta_signature"
@@ -54,7 +57,7 @@ def get_contribution(cancer_type, scenario, signature):
     return results
 
 
-def plot_heatmap_with_bar_plot(df, figsize=(8, 12), xlabel="Dataset (#Signatures)", x_tick_top=True):
+def plot_heatmap_with_bar_plot(df, method_colormap,figsize=(8, 12), xlabel="Dataset (#Signatures)", x_tick_top=True):
     _offset = -0.3
     n_ticks = df.shape[1]
 
@@ -64,11 +67,11 @@ def plot_heatmap_with_bar_plot(df, figsize=(8, 12), xlabel="Dataset (#Signatures
     bar_ax = fig.add_subplot(gs[0, 1], sharey=main_ax)
 
     bar_color = []
-    for method, _ in product(df.columns.get_level_values(level=0).unique(), range(3)):
+    for method, _ in product(df.index.get_level_values(level=0).unique(), range(3)):
             bar_color.append(method_colormap[method])
 
 
-    hmap = sns.heatmap(df.T, vmax=1., vmin=0., cmap="OrRd", ax=main_ax, cbar=False, annot=True)
+    hmap = sns.heatmap(df, vmax=1., vmin=0., cmap="OrRd", ax=main_ax, cbar=False, annot=True)
     means = df.T.mean(axis=1)
     bar_ax.barh(range(len(means)), means, height=1, align="edge", color=bar_color)
     #bar_ax.set_ylim(main_ax.get_ylim())
@@ -77,7 +80,7 @@ def plot_heatmap_with_bar_plot(df, figsize=(8, 12), xlabel="Dataset (#Signatures
     bar_ax.grid(True, axis='x')
     bar_ax.set_yticks([])
 
-    for i, (method, cluster) in enumerate(df.columns):
+    for i, (method, cluster) in enumerate(df.index):
         if not i % 3:
             rectangle = Rectangle((_offset, 1 - (i+3)/n_ticks), -_offset, 3/n_ticks, color=method_colormap[method], transform=main_ax.transAxes, clip_on=False)
             main_ax.add_patch(rectangle)

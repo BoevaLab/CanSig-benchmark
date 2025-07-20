@@ -12,6 +12,13 @@ os.environ['PYTHONPATH'] = f"{workflow_dir}/scripts:{os.environ.get('PYTHONPATH'
 print(os.environ['PYTHONPATH'] )
 cfg = ParsedConfig(config)
 
+print("DEBUG INFO:")
+print(f"Scenarios: {cfg.get_scenarios()}")
+print(f"Methods: {cfg.get_methods()}")
+print(f"n_hvgs: {cfg.n_hvgs}")
+print(f"batch_key: {cfg.use_batch_key}")
+print(f"ROOT: {cfg.ROOT}")
+print(f"Preprocessing: {cfg.skip_preprocessing}")
 
 include: "rules/preprocessing/Snakefile"
 include: "rules/integration/Snakefile"
@@ -24,6 +31,7 @@ wildcard_constraints:
     type=r"scrna|bulk|overlap",
     method=r"|".join(cfg.get_methods()),
     signature=r"|".join(cfg.signatures),
+    scenario=r"|".join(cfg.get_scenarios()),
     n_samples=r"\d+|all",
     random_seed = r"\d+",
     n_hvg = r"\d+|all",

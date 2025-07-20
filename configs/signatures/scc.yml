@@ -9,15 +9,14 @@ batch_key:
 methods:
   cca:
   unintegrated:
-  combat:
   ldvae:
-  dhaka:
   harmony:
-  scanorama:
   scvi:
   bbknn:
   mnc:
-  rpca:
+  scalop:
+  genenmf:
+
 
 random_seeds: 5
 
