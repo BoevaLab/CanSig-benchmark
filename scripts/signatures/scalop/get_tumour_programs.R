@@ -3,7 +3,23 @@ get_highly_expressed_genes <- function(sce){
   data <- Seurat::GetAssayData(sce, "data")
   data@x <- 2^(data@x) - 1
   gene_mean_expression <- log2(Matrix::rowMeans(10*data)+1)
-  return(names(gene_mean_expression)[gene_mean_expression>4.])
+  high_expr_genes <- names(gene_mean_expression)[gene_mean_expression > 4.]
+  
+  # Check if we have fewer than 6000 genes
+  if(length(high_expr_genes) < 6000) {
+    # If fewer than 6000, select top 6000 genes by expression level
+    # Sort all genes by expression level (descending) and take top 6000
+    sorted_genes <- names(sort(gene_mean_expression, decreasing = TRUE))
+    selected_genes <- sorted_genes[1:min(6000, length(sorted_genes))]
+    
+    logger::log_info(paste("Only", length(high_expr_genes), 
+                  "genes met expression threshold > 4. Selecting top", 
+                  length(selected_genes), "genes by expression level instead."))
+    
+    return(selected_genes)
+  } else {
+    return(high_expr_genes)
+  }
 }
 
  get_programs <- function(m, groups = NULL, nsig1 = 50, nsig2 = 10, jaccard = 0.7, p = 0.01, lfc = log2(2), pmethod = "BH") {
