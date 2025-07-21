@@ -10,4 +10,4 @@ default-resources:
 group-components:
   - signature_eval=20
   - overlap_eval=20
-  - fast_integration=25
+  - fast_integration=10
