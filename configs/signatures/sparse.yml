@@ -22,6 +22,12 @@ skip_preprocessing: True
 random_seeds: 1
 
 scenarios:
+  neftel_baseline:
+    data_path: data/sparse/neftel_baseline.h5ad
+    mem_scaling: 0.5
+    signatures:
+      - neftel_4
+
   neftel_0.25_0_unif:
     data_path: data/sparse/neftel_0.25_0_unif.h5ad
     mem_scaling: 0.5
@@ -62,11 +68,6 @@ scenarios:
     mem_scaling: 0.5
     signatures:
       - neftel_4
-  neftel_0.0_3:
-    data_path: data/sparse/neftel_0.0_3.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
   neftel_0.9_1:
     data_path: data/sparse/neftel_0.9_1.h5ad
     mem_scaling: 0.5
@@ -89,11 +90,6 @@ scenarios:
       - neftel_4
   neftel_0.25_2:
     data_path: data/sparse/neftel_0.25_2.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.0_0:
-    data_path: data/sparse/neftel_0.0_0.h5ad
     mem_scaling: 0.5
     signatures:
       - neftel_4
@@ -137,11 +133,6 @@ scenarios:
     mem_scaling: 0.5
     signatures:
       - neftel_4
-  neftel_0.0_1:
-    data_path: data/sparse/neftel_0.0_1.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
   neftel_0.9_4:
     data_path: data/sparse/neftel_0.9_4.h5ad
     mem_scaling: 0.5
@@ -182,18 +173,8 @@ scenarios:
     mem_scaling: 0.5
     signatures:
       - neftel_4
-  neftel_0.0_4:
-    data_path: data/sparse/neftel_0.0_4.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
   neftel_0.25_2_unif:
     data_path: data/sparse/neftel_0.25_2_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.0_2:
-    data_path: data/sparse/neftel_0.0_2.h5ad
     mem_scaling: 0.5
     signatures:
       - neftel_4
@@ -253,6 +234,6 @@ scenarios:
 signatures:
   neftel_4:
     annotation_path: annotations/neftel_4.csv
-    scoring_scenario: neftel_0.0_0
+    scoring_scenario: neftel_baseline
     n_cluster: 4
 
