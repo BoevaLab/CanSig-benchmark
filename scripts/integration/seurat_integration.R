@@ -5,7 +5,7 @@ library('logger')
 # Constants
 SAMPLE_COLUMN <- "sample"
 INTEGRATION_DIMS <- 1:30
-MAX_FUTURE_GLOBALS_SIZE <- 8000 * 1024^2
+MAX_FUTURE_GLOBALS_SIZE <- 1000000 * 1024^2
 
 #' Run integration on Seurat data
 #' @param data Seurat object
@@ -27,6 +27,7 @@ run_integration <- function(data, features, reduction_type) {
   }
   
   logger::log_info("Setting future globals max size to {MAX_FUTURE_GLOBALS_SIZE} bytes")
+  plan("multicore", workers = 5)
   options(future.globals.maxSize = MAX_FUTURE_GLOBALS_SIZE)
   
   logger::log_info("Splitting data by sample column: {SAMPLE_COLUMN}")
