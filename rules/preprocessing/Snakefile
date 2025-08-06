@@ -51,6 +51,6 @@ rule convert_h5ad_to_rds:
     container: "docker://fbarkmann/cansig:r"
     group: "preprocessing"
     resources:
-        mem_mb= lambda x: 8096 * cfg.get_mem_scaling(x)
+        mem_mb= lambda x: 16000 * cfg.get_mem_scaling(x)
     shell:
         "Rscript scripts/preprocessing/convert_h5ad_to_rds.R -i {input} -o {output} &> {log}"

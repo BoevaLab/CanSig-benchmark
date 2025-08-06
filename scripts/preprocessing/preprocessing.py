@@ -398,7 +398,7 @@ def add_labels(adata, labels_path) -> sc.AnnData:
     _LOGGER.info(f"Adding labels to {adata.n_obs} cells.")
     adata.obs = adata.obs.merge(labels, how="left", left_index=True, right_index=True)
     adata = adata[~adata.obs["celltype"].isna()].copy()
-    _LOGGER.info("Added labels to {adata.n_obs} cells.")
+    _LOGGER.info(f"Added labels to {adata.n_obs} cells.")
     return adata
     
 
