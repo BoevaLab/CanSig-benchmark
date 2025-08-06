@@ -23,8 +23,15 @@ random_seeds: 1
 scenarios:
   rms_scrna:
     data_path: data/raw/rms_scRNAseq.h5ad
+    mem_scaling: 2.0
+    labels_path: labels/RMS.csv
+
+  rms_scrna:
+    data_path: data/raw/rms_scRNAseq.h5ad
+    mem_scaling: 2.0
     labels_path: labels/RMS.csv
 
   rms_snrna:
     data_path: data/raw/rms_snRNAseq.h5ad
+    mem_scaling: 2.0
     labels_path: labels/RMS.csv
