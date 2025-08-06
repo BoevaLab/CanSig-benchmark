@@ -1,0 +1,48 @@
+root: results/signatures/rms
+
+
+skip_preprocessing: True
+
+batch_key:
+  - True
+
+n_hvgs:
+  - "4000"
+
+methods:
+  unintegrated:
+  harmony:
+  bbknn:
+  mnc:
+
+random_seeds: 1
+
+scenarios:
+
+  rms_all:
+    data_path: data/raw/rms_all.h5ad
+    signatures:
+      - rms_6
+      - rms_scanpy
+
+  rms_scrna:
+    data_path: data/raw/rms_scRNAseq.h5ad
+    signatures:
+      - rms_6
+      - rms_scanpy
+  
+  rms_snrna:
+    data_path: data/raw/rms_snRNAseq.h5ad
+    signatures:
+      - rms_6
+      - rms_scanpy
+
+signatures:
+  rms_6:
+    annotation_path: annotations/rms.csv
+    scoring_scenario: rms_scrna
+    n_cluster: 6
+  rms_scanpy:
+    annotation_path: annotations/rms_scanpy.csv
+    scoring_scenario: rms_scrna
+    n_cluster: 6

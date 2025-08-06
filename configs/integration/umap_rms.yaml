@@ -1,0 +1,30 @@
+root: results/integration/umap_rms
+
+plotting: True
+skip_preprocessing: True
+
+n_hvgs:
+  - "2000"
+
+batch_key:
+  - True
+
+methods:
+  unintegrated:
+  harmony:
+  scvi:
+  bbknn:
+  mnc:
+  rpca:
+
+random_seeds: 1
+
+
+scenarios:
+  rms_scrna:
+    data_path: data/raw/rms_scRNAseq.h5ad
+    labels_path: labels/RMS.csv
+
+  rms_snrna:
+    data_path: data/raw/rms_snRNAseq.h5ad
+    labels_path: labels/RMS.csv

@@ -1,4 +1,4 @@
-root: results/signatures/sparse
+root: results/signatures/debug
 
 
 n_hvgs:
@@ -8,7 +8,12 @@ batch_key:
   - True
 
 methods:
-  scvi:
+  cca:
+  unintegrated:
+  harmony:
+  bbknn:
+  mnc:
+  scalop:
 
 
 skip_preprocessing: True
@@ -16,233 +21,11 @@ skip_preprocessing: True
 random_seeds: 1
 
 scenarios:
-  neftel_0.25_0_unif:
-    data_path: data/sparse/neftel_0.25_0_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.25_0:
-    data_path: data/sparse/neftel_0.25_0.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.25_3:
-    data_path: data/sparse/neftel_0.25_3.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.75_3:
-    data_path: data/sparse/neftel_0.75_3.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.25_4:
-    data_path: data/sparse/neftel_0.25_4.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.75_1_unif:
-    data_path: data/sparse/neftel_0.75_1_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.5_4_unif:
-    data_path: data/sparse/neftel_0.5_4_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.9_3_unif:
-    data_path: data/sparse/neftel_0.9_3_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.0_3:
-    data_path: data/sparse/neftel_0.0_3.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.9_1:
-    data_path: data/sparse/neftel_0.9_1.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.25_1:
-    data_path: data/sparse/neftel_0.25_1.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.75_2_unif:
-    data_path: data/sparse/neftel_0.75_2_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.75_2:
-    data_path: data/sparse/neftel_0.75_2.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.25_2:
-    data_path: data/sparse/neftel_0.25_2.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
   neftel_0.0_0:
-    data_path: data/sparse/neftel_0.0_0.h5ad
+    data_path: results/signatures/gbm/data/preprocessed/neftel_smartseq2_brain.h5ad
     mem_scaling: 0.5
     signatures:
       - neftel_4
-  neftel_0.5_3:
-    data_path: data/sparse/neftel_0.5_3.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.5_1:
-    data_path: data/sparse/neftel_0.5_1.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.75_3_unif:
-    data_path: data/sparse/neftel_0.75_3_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.5_1_unif:
-    data_path: data/sparse/neftel_0.5_1_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.9_4_unif:
-    data_path: data/sparse/neftel_0.9_4_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.25_4_unif:
-    data_path: data/sparse/neftel_0.25_4_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.75_4_unif:
-    data_path: data/sparse/neftel_0.75_4_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.5_0:
-    data_path: data/sparse/neftel_0.5_0.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.0_1:
-    data_path: data/sparse/neftel_0.0_1.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.9_4:
-    data_path: data/sparse/neftel_0.9_4.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.9_0_unif:
-    data_path: data/sparse/neftel_0.9_0_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.75_0:
-    data_path: data/sparse/neftel_0.75_0.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.5_0_unif:
-    data_path: data/sparse/neftel_0.5_0_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.75_0_unif:
-    data_path: data/sparse/neftel_0.75_0_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.9_2:
-    data_path: data/sparse/neftel_0.9_2.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.5_2:
-    data_path: data/sparse/neftel_0.5_2.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.25_1_unif:
-    data_path: data/sparse/neftel_0.25_1_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.0_4:
-    data_path: data/sparse/neftel_0.0_4.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.25_2_unif:
-    data_path: data/sparse/neftel_0.25_2_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.0_2:
-    data_path: data/sparse/neftel_0.0_2.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.75_4:
-    data_path: data/sparse/neftel_0.75_4.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.9_2_unif:
-    data_path: data/sparse/neftel_0.9_2_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.9_1_unif:
-    data_path: data/sparse/neftel_0.9_1_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.9_3:
-    data_path: data/sparse/neftel_0.9_3.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.5_2_unif:
-    data_path: data/sparse/neftel_0.5_2_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.25_3_unif:
-    data_path: data/sparse/neftel_0.25_3_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.75_1:
-    data_path: data/sparse/neftel_0.75_1.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.9_0:
-    data_path: data/sparse/neftel_0.9_0.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.5_4:
-    data_path: data/sparse/neftel_0.5_4.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-  neftel_0.5_3_unif:
-    data_path: data/sparse/neftel_0.5_3_unif.h5ad
-    mem_scaling: 0.5
-    signatures:
-      - neftel_4
-
-
 
 signatures:
   neftel_4:

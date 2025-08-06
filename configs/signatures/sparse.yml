@@ -12,6 +12,8 @@ methods:
   unintegrated:
   harmony:
   bbknn:
+  ldvae:
+  scvi:
   mnc:
   scalop:
   genenmf:
