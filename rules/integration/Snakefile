@@ -80,7 +80,7 @@ use rule integration_base as scvi_integration with:
     params:
         script="scripts/integration/scvi_latent.py"
     resources:
-        partition="gpu",
+        slurm_partition="gpu",
         mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x),
         gpu=1,
         slurm_extra="--gres gpu:1"
