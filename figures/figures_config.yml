@@ -62,3 +62,14 @@ datasets:
   couturier_brain: "Couturier"
   wang_brain: "Wang"
   yuan_brain: "Yuan"
+
+font_config:
+  axes.titlesize: 20
+  axes.labelsize: 20
+  legend.title_fontsize: 20
+  legend.fontsize: 16
+  xtick.labelsize: 16
+  ytick.labelsize: 16
+  svg.fonttype: 'none'
+  font.family: 'sans-serif'
+  font.sans-serif: ['Helvetica', 'Arial', 'Liberation Sans', 'DejaVu Sans']
