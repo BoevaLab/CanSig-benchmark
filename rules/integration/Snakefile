@@ -100,6 +100,7 @@ use rule integration_base as bbknn_integration with:
     output: cfg.ROOT / "integration/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/latent.npz"
     wildcard_constraints: method="bbknn.*"
     container: "docker://fbarkmann/cansig:base"
+    group: "fast_integration"
     threads: 6
     params:
         script="scripts/integration/bbknn_latent.py"
