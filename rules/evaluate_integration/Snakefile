@@ -10,7 +10,7 @@ rule eval_latent:
     threads: 4
     log: cfg.ROOT /  "logs/eval/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}.txt"
     resources:
-        mem_mb=8000
+        mem_mb= lambda x: 8096 * cfg.get_mem_scaling(x)
     shell: "python scripts/evaluate_integration/eval.py --data-path {input.data_path} --latent {input.latent} --output {output.metrics} --output-umap {output.umap} --plotting {cfg.plotting} &> {log}"
 
 rule eval_graph:
@@ -25,5 +25,5 @@ rule eval_graph:
     wildcard_constraints:
         method="bbknn.*"
     resources:
-        mem_mb=8000
+        mem_mb= lambda x: 8096 * cfg.get_mem_scaling(x)
     shell: "python scripts/evaluate_integration/eval.py --data-path {input.data_path} --latent {input.latent} --output {output.metrics} --output-umap {output.umap} --plotting {cfg.plotting}  &> {log}"
