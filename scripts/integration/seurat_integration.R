@@ -84,7 +84,7 @@ run_integration <- function(data, features, reduction_type) {
   })
   
   logger::log_info("Scaling integrated data")
-  #integrated <- ScaleData(integrated, verbose = FALSE)
+  integrated <- ScaleData(integrated, verbose = FALSE)
   
   logger::log_info("Running PCA on integrated data")
   integrated <- RunPCA(integrated, verbose = FALSE)
