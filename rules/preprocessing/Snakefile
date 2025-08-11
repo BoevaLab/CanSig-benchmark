@@ -32,7 +32,7 @@ rule subsample:
         batch_keys=cfg.use_batch_key
     resources:
         mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
-    group: "preprocessing"
+    group: "preprocessing_{scenario}_{random_seed}"
     shell:
         """python scripts/preprocessing/subsample.py -i {input} \
             -o {output} \
@@ -49,7 +49,7 @@ rule convert_h5ad_to_rds:
     log: cfg.ROOT / "logs/convert_h5ad_to_rds/{scenario}_{n_samples}_{random_seed}.txt"
     threads: 1
     container: "docker://fbarkmann/cansig:r"
-    group: "preprocessing"
+    group: "preprocessing_{scenario}_{random_seed}"
     resources:
         mem_mb= lambda x: 16000 * cfg.get_mem_scaling(x)
     shell:
