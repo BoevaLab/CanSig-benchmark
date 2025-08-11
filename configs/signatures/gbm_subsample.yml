@@ -36,12 +36,10 @@ scenarios:
     preprocessing:
       min_genes: 3000
       max_pct_mt: 20
+    mem_scaling: 0.5
     signatures:
       - neftel_4
       - neftel_6
-
-
-
 
 signatures:
   neftel_4:

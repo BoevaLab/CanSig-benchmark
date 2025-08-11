@@ -7,44 +7,46 @@ batch_key:
   - True
 
 n_hvgs:
-  - "4000"
+  - "2000"
 
 methods:
+  cca:
   unintegrated:
+  ldvae:
   harmony:
+  scvi:
   bbknn:
   mnc:
+  scalop:
+  genenmf:
+  rpca:
+  fastmnn:
 
-random_seeds: 1
+random_seeds: 5
 
 scenarios:
-
+scenarios:
   rms_all:
     data_path: data/raw/rms_all.h5ad
-    mem_scaling: 0.5
+    mem_scaling: 3.0
     signatures:
       - rms_6
-      - rms_scanpy
 
   rms_scrna:
     data_path: data/raw/rms_scRNAseq.h5ad
-    mem_scaling: 0.5
+    mem_scaling: 2.0
     signatures:
       - rms_6
-      - rms_scanpy
-  
+
   rms_snrna:
     data_path: data/raw/rms_snRNAseq.h5ad
+    mem_scaling: 2.0
+    labels_path: labels/RMS.csv
     signatures:
       - rms_6
-      - rms_scanpy
 
 signatures:
   rms_6:
     annotation_path: annotations/rms.csv
-    scoring_scenario: rms_scrna
-    n_cluster: 6
-  rms_scanpy:
-    annotation_path: annotations/rms_scanpy.csv
     scoring_scenario: rms_scrna
     n_cluster: 6

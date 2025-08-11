@@ -1,0 +1,32 @@
+root: results/integration/umap_nb
+
+plotting: True
+skip_preprocessing: True
+
+n_hvgs:
+  - "2000"
+
+batch_key:
+  - True
+
+methods:
+  unintegrated:
+  #combat:
+  ldvae:
+  #dhaka:
+  harmony:
+  #scanorama:
+  scvi:
+  bbknn:
+  #mnc:
+  #rpca:
+  #fastmnn:
+
+random_seeds: 1
+
+
+scenarios:
+  nb:
+    data_path: data/raw/nb.h5ad
+    mem_scaling: 7.0
+    labels_path: labels/nb.csv

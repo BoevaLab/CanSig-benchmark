@@ -25,6 +25,11 @@ random_seeds: 5
 scenarios:
   wu_breast:
     data_path: data/raw/Wu_breast.h5ad
+    preprocessing:
+      excluded_samples:
+        - "CID3941"
+        - "CID4461"
+    
     signatures:
       - wu_4
       - wu_6

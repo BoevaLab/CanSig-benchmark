@@ -7,7 +7,6 @@ n_hvgs:
 
 batch_key:
   - True
-  - False
 
 methods:
   cca:
