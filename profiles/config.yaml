@@ -6,3 +6,9 @@ default-resources:
     - runtime=360
     - partition="compute"
     - slurm_extra=""
+
+group-components:
+  - preprocessing=20
+  - signature_eval=20
+  - overlap_eval=20
+  - fast_integration=20
