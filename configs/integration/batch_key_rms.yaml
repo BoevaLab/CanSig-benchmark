@@ -10,7 +10,6 @@ batch_key:
   - True
 
 methods:
-  cca:
   unintegrated:
   combat:
   ldvae:
