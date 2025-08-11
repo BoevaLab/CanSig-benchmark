@@ -21,12 +21,14 @@ scenarios:
 
   rms_all:
     data_path: data/raw/rms_all.h5ad
+    mem_scaling: 0.5
     signatures:
       - rms_6
       - rms_scanpy
 
   rms_scrna:
     data_path: data/raw/rms_scRNAseq.h5ad
+    mem_scaling: 0.5
     signatures:
       - rms_6
       - rms_scanpy

@@ -8,7 +8,7 @@ rule integration_base:
     wildcard_constraints: 
         method="test.*"
     log:
-        cfg.ROOT / "logs/meta_sigs/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration.txt"
+        cfg.ROOT / "logs/integration/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration.txt"
     params: 
         script=""
     shell:
@@ -116,7 +116,7 @@ rule cca_latent:
     benchmark:
         cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration_{ext}.txt"
     log:
-        cfg.ROOT / "logs/meta_sigs/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration_{ext}.txt"
+        cfg.ROOT / "logs/integration/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration_{ext}.txt"
     wildcard_constraints: 
         method="cca.*",
         ext="csv|rds"
@@ -144,3 +144,28 @@ use rule cca_latent as rpca_latent with:
         script="scripts/integration/seurat_integration.R",
         method="rpca"
 
+rule fastmnn_latent:
+    input: 
+        rules.convert_h5ad_to_rds.output
+    output: 
+        cfg.ROOT / "integration/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/latent.{ext}"
+    container: "docker://fbarkmann/cansig:r"
+    benchmark:
+        cfg.ROOT / "benchmarks/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration_{ext}.txt"
+    log:
+        cfg.ROOT / "logs/integration/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/integration_{ext}.txt"
+    wildcard_constraints: 
+        method="fastmnn.*",
+        ext="csv|rds"
+    threads: 6
+    resources:
+        mem_mb= lambda x: min(128000, 128000 * cfg.get_mem_scaling(x))
+    params: 
+        script="scripts/integration/fastMNN.R",
+    shell:"""Rscript {params.script} \
+            -i {input} \
+            -o {output} \
+            -r {wildcards.random_seed} \
+            --n-hvg {wildcards.n_hvg} \
+            --batch-key {wildcards.batch_key} \
+            &> {log}"""

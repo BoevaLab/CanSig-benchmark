@@ -16,6 +16,8 @@ methods:
   mnc:
   scalop:
   genenmf:
+  rpca:
+  fastmnn:
 
 random_seeds: 5
 

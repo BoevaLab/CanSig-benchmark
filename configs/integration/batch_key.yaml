@@ -21,6 +21,8 @@ methods:
   bbknn:
   mnc:
   rpca:
+  fastmnn:
+
 
 random_seeds: 5
 n_samples: 
@@ -40,6 +42,3 @@ scenarios:
   neftel_10x:
     data_path: data/raw/Neftel_brain_10X.h5ad
     labels_path: labels/neftel_10x.csv
-  vazquez_ovarian:
-    data_path: data/raw/vazquez_ovarian.h5ad
-    labels_path: labels/vazquez_ovarian.csv

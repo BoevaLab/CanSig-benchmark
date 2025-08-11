@@ -5,7 +5,7 @@ rule eval_latent:
         metrics=cfg.ROOT / "eval/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/metrics.csv",
         umap=cfg.ROOT / "plotting/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{method}/umap.csv"
     wildcard_constraints:
-        method="scvi.*|harmony.*|unintegrated.*|mnc.*|cca.*|ldvae.*|combat.*|dhaka.*|scanorama.*|cca.*|rpca.*"
+        method="scvi.*|harmony.*|unintegrated.*|mnc.*|cca.*|ldvae.*|combat.*|dhaka.*|scanorama.*|cca.*|rpca.|fastmnn.*"
     container: "docker://fbarkmann/cansig:base"
     threads: 4
     log: cfg.ROOT /  "logs/eval/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}.txt"

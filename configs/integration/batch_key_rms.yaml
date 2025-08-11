@@ -1,15 +1,16 @@
-root: results/integration/umap
+root: results/integration/batch_key
 
-plotting: True
-skip_preprocessing: True
+plotting: False
 
 n_hvgs:
   - "2000"
 
 batch_key:
   - True
+  - False
 
 methods:
+  cca:
   unintegrated:
   combat:
   ldvae:
@@ -22,7 +23,10 @@ methods:
   rpca:
   fastmnn:
 
-random_seeds: 1
+
+random_seeds: 5
+n_samples: 
+  - 0.8
 
 
 scenarios:

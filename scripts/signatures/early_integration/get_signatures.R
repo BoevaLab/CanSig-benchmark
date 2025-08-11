@@ -50,8 +50,9 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list=option_list))
 set.seed(opt$r)
 integrated <- load_data(opt$i)
-integrated <-FindNeighbors(integrated)
+integrated <-FindNeighbors(integrated, reduction = "pca")
 integrated <-get_clusters(integrated, opt$n, opt$r)
+DefaultAssay(integrated) <- "RNA"
 results = data.frame(row.names = 1:50)
 for (group in unique(integrated@active.ident)){
   if (sum(integrated@active.ident == group)< 5)

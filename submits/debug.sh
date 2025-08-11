@@ -7,4 +7,4 @@
 #SBATCH --mem=8G
 
 
-srun snakemake  --use-singularity --singularity-args "\\-\\-nv" --profile profiles -s integration.smk --keep-going -j 10 --configfile $@
+srun snakemake  --use-singularity --singularity-args "\\-\\-nv" --profile profiles -s integration.smk --keep-going -j 20 --configfile $@

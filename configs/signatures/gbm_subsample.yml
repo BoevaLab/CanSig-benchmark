@@ -16,6 +16,10 @@ methods:
   mnc:
   scalop:
   genenmf:
+  fastmnn:
+  rpca:
+
+
 
 n_samples:
   - 5

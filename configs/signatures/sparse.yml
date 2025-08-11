@@ -17,6 +17,10 @@ methods:
   mnc:
   scalop:
   genenmf:
+  fastmnn:
+  rpca:
+
+
 
 
 skip_preprocessing: True

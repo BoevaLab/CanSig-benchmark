@@ -9,27 +9,20 @@ batch_key:
 
 methods:
   cca:
-  unintegrated:
-  harmony:
-  bbknn:
-  mnc:
-  scalop:
-
-
-skip_preprocessing: True
+  fastmnn:
 
 random_seeds: 1
 
 scenarios:
-  neftel_0.0_0:
-    data_path: results/signatures/gbm/data/preprocessed/neftel_smartseq2_brain.h5ad
-    mem_scaling: 0.5
+  ji_skin:
+    data_path: data/raw/Ji_skin.h5ad
+    random_seeds: 5
     signatures:
-      - neftel_4
+      - ji_3
 
 signatures:
-  neftel_4:
-    annotation_path: annotations/neftel_4.csv
-    scoring_scenario: neftel_0.0_0
-    n_cluster: 4
+  ji_3:
+    annotation_path: annotations/ji_skin.csv
+    scoring_scenario: ji_skin
+    n_cluster: 3
 

@@ -21,6 +21,7 @@ methods:
   bbknn:
   mnc:
   rpca:
+  fastmnn:
 
 random_seeds: 5
 n_samples: 

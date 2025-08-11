@@ -17,6 +17,9 @@ methods:
   mnc:
   scalop:
   genenmf:
+  fastmnn:
+  rpca:
+
 
 random_seeds: 5
 
@@ -63,10 +66,10 @@ scenarios:
 
   neftel_10x_brain:
     data_path: data/raw/Neftel_brain_10X.h5ad
-    preprocessing:
-      min_genes: 1000
-      max_pct_mt: 20
     bulk_path: TCGA_data/GBM/GBM_gex_fpkm_uq.csv
+    preprocessing:
+      excluded_samples:
+        - "114"
     signatures:
       - neftel_4
       - neftel_6
