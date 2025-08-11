@@ -1,6 +1,7 @@
 root: results/integration/batch_key
 
 plotting: False
+skip_preprocessing: True
 
 n_hvgs:
   - "2000"
