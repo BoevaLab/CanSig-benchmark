@@ -10,7 +10,6 @@ n_hvgs:
   - "2000"
 
 methods:
-  cca:
   unintegrated:
   ldvae:
   harmony:
