@@ -19,7 +19,7 @@ rule corrs:
         annotation_path=cfg.get_annotation_path,
         data_path= get_data_path
     output: cfg.ROOT / "corrs/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{signature}/{cluster}/{n_hvg}/{batch_key}/corrs.csv"
-    group: "signature_eval"
+    group: "signature_eval_{scenario}"
     resources:
         mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     wildcard_constraints:
@@ -34,7 +34,7 @@ rule marker_overlap:
         annotation_path=cfg.get_annotation_path,
         data_path= rules.preprocessing.output
     output: cfg.ROOT / "{type}/{method}/{scenario}_{n_samples}_{random_seed}/{cluster}/{n_hvg}/{batch_key}/{signature}.csv"
-    group: "overlap_eval"
+    group: "overlap_eval_{scenario}"
     resources:
         mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     wildcard_constraints:
@@ -57,7 +57,7 @@ def get_cluster_overlap(wildcards):
 rule eval:
     input: get_cluster
     output: cfg.ROOT / "scores/method/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
-    group: "signature_eval"
+    group: "signature_eval_{scenario}"
     resources:
         mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     wildcard_constraints:
@@ -68,7 +68,7 @@ rule eval:
 rule eval_overlap:
     input: get_cluster_overlap
     output: cfg.ROOT / "scores/method/{type}/{method}/{scenario}_{n_samples}_{random_seed}/{n_hvg}/{batch_key}/{signature}.csv"
-    group: "overlap_eval"
+    group: "overlap_eval_{scenario}"
     resources:
         mem_mb= lambda x: 4048 * cfg.get_mem_scaling(x)
     wildcard_constraints:

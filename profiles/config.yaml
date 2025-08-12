@@ -2,13 +2,13 @@ jobs: 100
 executor: slurm
 
 default-resources:
-    - mem_mb=3850
-    - runtime=360
-    - partition="compute"
-    - slurm_extra="--exclude compute-biomed-03,compute-biomed-09"
+  mem_mb: 3850
+  runtime: 360
+  partition: "compute"
+  slurm_extra: "--exclude compute-biomed-03,compute-biomed-09"
 
 group-components:
-  - preprocessing=5
-  - signature_eval=5
-  - overlap_eval=5
-  - fast_integration=5
+  preprocessing: 5
+  signature_eval: 5
+  overlap_eval: 5
+  fast_integration: 5
