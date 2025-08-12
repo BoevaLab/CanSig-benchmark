@@ -11,22 +11,21 @@ batch_key:
 
 methods:
   unintegrated:
-  #combat:
+  combat:
   ldvae:
-  #dhaka:
+  dhaka:
   harmony:
-  #scanorama:
+  scanorama:
   scvi:
   bbknn:
-  #mnc:
-  #rpca:
-  #fastmnn:
+  mnc:
+  rpca:
+  fastmnn:
 
 random_seeds: 1
-
 
 scenarios:
   nb:
     data_path: data/raw/nb.h5ad
-    mem_scaling: 7.0
+    mem_scaling: 5.
     labels_path: labels/nb.csv
