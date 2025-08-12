@@ -8,7 +8,7 @@ default-resources:
     - slurm_extra="--exclude compute-biomed-03,compute-biomed-09"
 
 group-components:
-  - preprocessing=10
-  - signature_eval=10
-  - overlap_eval=10
-  - fast_integration=10
+  - preprocessing=5
+  - signature_eval=5
+  - overlap_eval=5
+  - fast_integration=5
