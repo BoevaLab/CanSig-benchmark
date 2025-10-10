@@ -46,12 +46,12 @@ To reproduce the specific results from the CanSig-benchmark paper, use the provi
 
 **Signature Analysis Pipeline:**
 ```bash
-snakemake --configfile config/signatures/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s signatures.smk
+snakemake --configfile configs/signatures/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s signatures.smk
 ```
 
 **Integration Analysis Pipeline:**
 ```bash
-snakemake --configfile config/integration/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s integration.smk
+snakemake --configfile configs/integration/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s integration.smk
 ```
 
 Replace `<config>` with the specific configuration file name you want to use. The `--nvccli` argument enables NVIDIA container support for GPU-accelerated methods.

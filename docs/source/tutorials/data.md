@@ -71,11 +71,6 @@ conda activate cansig
    snakemake --configfile your_config.yml --sdm apptainer -c <number-of-cores> -s integration.smk
    ```
 
-   **For both (complete pipeline):**
-   ```bash
-   snakemake --configfile your_config.yml --sdm apptainer -c <number-of-cores>
-   ```
-
 Replace `<number-of-cores>` with the number of CPU cores you want to allocate to the pipeline.
 
 
@@ -83,14 +78,25 @@ Replace `<number-of-cores>` with the number of CPU cores you want to allocate to
 
 Results will be organized in your specified directory as follows:
 ```
+# For -s signatures.smk
 results/your_analysis/
 ├── benchmarks/     # Performance benchmarks for each pipeline step
 ├── corrs/          # Correlation analysis results
 ├── data/           # Processed data files
 ├── integration/    # Integrated datasets for each method
 ├── logs/          # Pipeline execution logs
-├── metasigs/      # Generated meta-signatures
+├── signatures/      # Generated signatures
+├── overlap/      # overlap score for each signature
 └── scores/        # Evaluation scores and metrics
+
+# For -s integration.smk
+results/your_analysis/
+├── benchmarks/     # Performance benchmarks for each pipeline step
+├── data/           # Processed data files
+├── integration/    # Integrated datasets for each method
+├── logs/          # Pipeline execution logs
+├── eval/      # scib metrics for the latent spaces
+└── plotting/        # Umaps of the latent representations
 ```
 Each directory contains the intermediate and final results for that stage of the pipeline.
 

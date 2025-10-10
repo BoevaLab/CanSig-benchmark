@@ -20,7 +20,7 @@ conda activate cansig
 ### Data Preparation
 
 After setting up the environment, you'll need to download the cancer datasets from the Curated Cancer Cell Atlas (CCCA). These datasets form the foundation for the benchmarking analysis.
-For detailed instructions on downloading and processing the CCCA datasets, see the [CCCA Data Download Guide](ccca.md).
+For detailed instructions on downloading and processing the CCCA datasets, see the [CCCA Data Download Guide](https://boevalab.github.io/CanSig-benchmark/ccca.html).
 
 Quick start for downloading a test dataset:
 

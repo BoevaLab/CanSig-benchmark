@@ -29,7 +29,7 @@ python ccafetcher.py --metadata 3ca_test.csv --download-dir data/downloads --dat
 The signature analysis pipeline evaluates different gene signature methods across cancer datasets:
 
 ```bash
-snakemake --configfile config/signatures/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s signatures.smk
+snakemake --configfile configs/signatures/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s signatures.smk
 ```
 
 Available signature configuration files can be found at `configs/signatures`.
@@ -39,7 +39,7 @@ Available signature configuration files can be found at `configs/signatures`.
 The integration analysis pipeline benchmarks batch integration methods:
 
 ```bash
-snakemake --configfile config/integration/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s integration.smk
+snakemake --configfile configs/integration/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s integration.smk
 ```
 
 Available signature configuration files can be found at `configs/integration`.
