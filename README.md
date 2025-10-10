@@ -1,47 +1,62 @@
-# CanSig-benchmark
+# Getting Started
 
-Complete documentation and tutorials: https://boevalab.github.io/CanSig-benchmark/
+The CanSig-benchmark is a comprehensive benchmarking framework for cancer gene signature methods. This guide will walk you through setting up the environment and preparing the data needed to run the benchmarking pipeline.
 
-## Running the benchmark
-### Installing the enviorments
-This repository provides conda environments for reproducing our benchmarking. We provide two installation options for different reproducibility needs.
+### Environment Setup
 
-### Option 1: Exact Reproducibility
-Use environments from `envs/with_build/`:
+The base environment contains Snakemake, Apptainer, and other essential tools needed to orchestrate the benchmarking pipeline. All computational methods are containerized to ensure reproducibility across different systems.
+
+Install the base environment that includes Snakemake and Apptainer:
+
 ```bash
-conda env create -f envs/with_build/CanSig-R.yml
-conda env create -f envs/with_build/CanSig-python.yml
-conda env create -f envs/with_build/cansig-benchmark.yml
+conda env create -f envs/cansig.yml
 ```
+Activate the base environment:
 
-### Option 2: Flexible Installation
-Use environments from `envs/without_build/`:
 ```bash
-conda env create -f envs/without_build/CanSig-R.yml
-conda env create -f envs/without_build/CanSig-python.yml
-conda env create -f envs/without_build/cansig-benchmark.yml
+conda activate cansig
 ```
 
-The whole benchmark is run with the cansig-benchmark environment and snakemake activates the other environments. 
+### Data Preparation
+
+After setting up the environment, you'll need to download the cancer datasets from the Curated Cancer Cell Atlas (CCCA). These datasets form the foundation for the benchmarking analysis.
+For detailed instructions on downloading and processing the CCCA datasets, see the [CCCA Data Download Guide](ccca.md).
+
+Quick start for downloading a test dataset:
+
 ```bash
-conda activate cansig-benchmark
+python ccafetcher.py --metadata 3ca_test.csv --download-dir data/downloads --dataset-dir data/raw --sample 0 --fetch
 ```
 
-### Downloading the data
-To run the benchmark, first download the data from the 3ca.
-```
-python ccafetcher.py
-```
-Install the necessary environments.
-Then use snakemake to run the benchmark.
-```
-snakemake --configfile config.yml -c <n-threads> --use-conda
+### Running the Snakemake Pipeline
+
+Once you have set up the environment and downloaded the necessary datasets, you can execute the benchmarking pipeline. The pipeline uses docker containers to ensure all methods run in isolated, reproducible environments.
+
+Execute the pipeline using docker containers:
+
+```bash
+snakemake --configfile <path_to_your_config> --sdm apptainer -c <number_of_cores> 
 ```
 
+Replace `<path_to_your_config>` with your specific configuration file and `<number_of_cores>` with the number of CPU cores you want to allocate.
 
-### Changes made to the 3CA.
-- Fix the metadata of Neftel et al. by changing the technology to 10x for some samples.
-- Converted the .rds in Couturier et al. to .mtx.
-- The dataset from Couturier et al. was subsetted to cells that where identified as IDH WT in
-genetic_hormonal_features and in histology as GBM.
-- The dataset from Yuan et al. was subsetted to GBM patients.
+### Reproducing Paper Results
+
+To reproduce the specific results from the CanSig-benchmark paper, use the provided configuration files. The pipeline includes two main components: signature analysis and integration analysis.
+
+**Signature Analysis Pipeline:**
+```bash
+snakemake --configfile config/signatures/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s signatures.smk
+```
+
+**Integration Analysis Pipeline:**
+```bash
+snakemake --configfile config/integration/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s integration.smk
+```
+
+Replace `<config>` with the specific configuration file name you want to use. The `--nvccli` argument enables NVIDIA container support for GPU-accelerated methods.
+
+## Next Steps
+
+1. **Configure your analysis**: Examine the configuration files in `config/signatures/` and `config/integration/` to understand the available options
+3. **Analyze results**: Once done running your benchmark you can analyse the created data using the notebooks provided in ```figures/```

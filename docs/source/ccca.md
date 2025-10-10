@@ -72,3 +72,11 @@ Each processed AnnData object contains:
 - **var**: Gene-level metadata (variables)
 - **uns**: Unstructured metadata including count type
 
+### Changes made to the 3CA.
+We corrected a couple of errors in the 3CA.
+
+- Fix the metadata of Neftel et al. by changing the technology to 10x for some samples.
+- Converted the .rds in Couturier et al. to .mtx.
+- The dataset from Couturier et al. was subsetted to cells that where identified as IDH WT in
+genetic_hormonal_features and in histology as GBM.
+- The dataset from Yuan et al. was subsetted to GBM patients.
