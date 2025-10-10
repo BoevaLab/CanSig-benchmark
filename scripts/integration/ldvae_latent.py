@@ -4,8 +4,8 @@ from utils import get_args, save_latent, read_adata, set_seed
 
 _LATENT = "_cansig_latent"
 
-_ARGS = [("-n", "--n-hvg", str),
-         ("-b", "--batch-key", str)]
+_ARGS = [("-n", "--n-hvg", str), ("-b", "--batch-key", str)]
+
 
 def main():
     args = get_args(args=_ARGS)
@@ -18,5 +18,5 @@ def main():
     save_latent(args.output, adata.obsm[_LATENT], adata.obs_names)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

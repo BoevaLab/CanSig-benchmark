@@ -1,6 +1,4 @@
 import logging
-import pathlib as pl
-from argparse import ArgumentParser
 
 import anndata
 import pandas as pd
@@ -17,13 +15,17 @@ logging.root.setLevel(logging.INFO)
 _LOGGER = logging.getLogger(__name__)
 
 
-_ARGS = [("-n", "--n-hvg", str),
-         ("-b", "--batch-key", str)]
+_ARGS = [("-n", "--n-hvg", str), ("-b", "--batch-key", str)]
+
 
 def get_latent(adata: anndata.AnnData) -> pd.DataFrame | dict:
     sc.tl.pca(adata)
     sc.external.pp.bbknn(adata, batch_key=BATCH_KEY)
-    latent = {"connectivities": adata.obsp["connectivities"], "distances": adata.obsp["distances"], "index": adata.obs_names}
+    latent = {
+        "connectivities": adata.obsp["connectivities"],
+        "distances": adata.obsp["distances"],
+        "index": adata.obs_names,
+    }
     return latent
 
 
@@ -36,5 +38,5 @@ def main():
     np.savez(args.output.with_suffix(""), **latent)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

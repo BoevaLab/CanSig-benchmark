@@ -12,8 +12,8 @@ logging.root.setLevel(logging.INFO)
 _LOGGER = logging.getLogger(__name__)
 
 
-_ARGS = [("-n", "--n-hvg", str),
-         ("-b", "--batch-key", str)]
+_ARGS = [("-n", "--n-hvg", str), ("-b", "--batch-key", str)]
+
 
 def main():
     args = get_args(args=_ARGS)
@@ -24,5 +24,5 @@ def main():
     save_latent(args.output, adata.X, adata.obs_names)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

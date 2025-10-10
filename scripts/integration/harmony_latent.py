@@ -1,5 +1,4 @@
 import logging
-import pathlib as pl
 import anndata
 import pandas as pd
 import scanpy as sc
@@ -17,14 +16,15 @@ _LOGGER = logging.getLogger(__name__)
 def get_latent(adata: anndata.AnnData) -> pd.DataFrame:
     BATCH_KEY = "sample"
     sc.tl.pca(adata)
-    sc.external.pp.harmony_integrate(adata, key=BATCH_KEY, basis="X_pca", adjusted_basis=_LATENT)
+    sc.external.pp.harmony_integrate(
+        adata, key=BATCH_KEY, basis="X_pca", adjusted_basis=_LATENT
+    )
     latent = pd.DataFrame(adata.obsm[_LATENT], index=adata.obs_names)
     return latent
 
 
+_ARGS = [("-n", "--n-hvg", str), ("-b", "--batch-key", str)]
 
-_ARGS = [("-n", "--n-hvg", str),
-         ("-b", "--batch-key", str)]
 
 def main():
     args = get_args(args=_ARGS)
@@ -35,5 +35,5 @@ def main():
     latent.to_csv(args.output)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

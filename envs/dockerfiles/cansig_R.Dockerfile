@@ -261,6 +261,7 @@ RUN R -e "devtools::install_github('https://github.com/BoevaLab/scalop.git')"
 RUN R -e 'devtools::install_version("SeuratObject", version = "4.1.3", dependencies = TRUE, upgrade = "never")'
 RUN R -e 'devtools::install_version("Seurat", version = "4.3.0", dependencies = TRUE, upgrade = "never")'
 RUN R -e 'devtools::install_version("GeneNMF", version = "0.4.0", dependencies = TRUE, upgrade = "never")'
+RUN R -e 'install.packages("GeneNMF", version = "0.4.0", dependencies = TRUE, upgrade = "never")'
 
 
 # Set working directory

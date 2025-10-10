@@ -25,6 +25,7 @@ random_seeds: 5
 scenarios:
   wu_breast:
     data_path: data/raw/Wu_breast.h5ad
+    bulk_path: TCGA_data/BRCA/BRCA_gex_fpkm_uq.csv
     preprocessing:
       excluded_samples:
         - "CID3941"

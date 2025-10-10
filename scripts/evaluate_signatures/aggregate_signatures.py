@@ -7,6 +7,7 @@ _CLUSTER = "Cluster"
 _SIGNATURE = "Signature"
 _SPLIT = "Split"
 
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", "-i", nargs="+")

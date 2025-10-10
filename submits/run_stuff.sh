@@ -1,0 +1,3 @@
+snakemake --sdm apptainer --apptainer-args "\\-\\-nvccli"  --configfile configs/integration/nb.yaml -c 36 --resources gpu=1  -s integration.smk --keep-going --res mem_mb=62000 gpu=1
+snakemake --sdm apptainer --apptainer-args "\\-\\-nvccli"  --configfile configs/signatures/sparse.yml -c 36 --resources gpu=1 mem_mb=64000  -s signatures.smk --keep-going --rerun-triggers mtime
+snakemake --sdm apptainer --apptainer-args "\\-\\-nvccli"  --configfile configs/signatures/gbm_subsample.yml -c 36 --resources gpu=1 mem_mb=64000  -s signatures.smk --keep-going --rerun-triggers mtime

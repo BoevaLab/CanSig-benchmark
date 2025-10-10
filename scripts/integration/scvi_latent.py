@@ -1,8 +1,6 @@
 import logging
-import pathlib as pl
 import anndata
 import pandas as pd
-import scanpy as sc
 
 from utils import get_args, set_seed, read_adata
 
@@ -14,22 +12,21 @@ _LOGGER = logging.getLogger(__name__)
 
 def get_latent(adata: anndata.AnnData) -> pd.DataFrame:
     import scvi
-    
+
     BATCH_KEY = "sample"
     COUNT_LAYER = "counts"
 
     scvi.model.SCVI.setup_anndata(adata, batch_key=BATCH_KEY, layer=COUNT_LAYER)
-    model = scvi.model.SCVI(
-        adata)
-    _LOGGER.info(f"Start training.")
+    model = scvi.model.SCVI(adata)
+    _LOGGER.info("Start training.")
     model.train(train_size=1.0)
     latent = pd.DataFrame(model.get_latent_representation(), index=adata.obs_names)
 
     return latent
 
 
-_ARGS = [("-n", "--n-hvg", str),
-         ("-b", "--batch-key", str)]
+_ARGS = [("-n", "--n-hvg", str), ("-b", "--batch-key", str)]
+
 
 def main():
     args = get_args(args=_ARGS)
@@ -40,5 +37,5 @@ def main():
     latent.to_csv(args.output)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

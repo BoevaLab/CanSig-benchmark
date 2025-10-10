@@ -8,13 +8,13 @@ from argparse import ArgumentParser, Namespace
 from os import PathLike
 from scipy.sparse import csr_matrix, diags
 from sklearn.utils import sparsefuncs
-from typing import Tuple, Literal, List, Optional
+from typing import Tuple, List, Optional
 import pandas as pd
 
-warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 SEQ_10x = "10x"
-MICROWELL = 'microwell array-based platform'
+MICROWELL = "microwell array-based platform"
 MICROWELL_SEQ = "microwell-seq"
 SEQ_SS2 = "smartseq2"
 SMARTSEQ2 = "SmartSeq2"
@@ -32,7 +32,7 @@ _LOGGER = logging.getLogger(__name__)
 def get_args() -> Namespace:
     """
     Parse command line arguments for the preprocessing pipeline.
-    
+
     Returns:
         Namespace: Parsed command line arguments including:
             - input: Path to input h5ad file
@@ -50,17 +50,20 @@ def get_args() -> Namespace:
     parser.add_argument("--min-counts", type=int)
     parser.add_argument("--max-pct-mt", type=float, required=True)
     parser.add_argument("--labels-path", type=pl.Path)
-    parser.add_argument('--skip-preprocessing', action='store_true',)
+    parser.add_argument(
+        "--skip-preprocessing",
+        action="store_true",
+    )
     return parser.parse_args()
 
 
 def get_counts_per_cell(x: csr_matrix):
     """
     Calculate the total count of gene expression for each cell.
-    
+
     Args:
         x (csr_matrix): Sparse matrix containing gene expression data
-        
+
     Returns:
         numpy.ndarray: Array containing total counts for each cell
     """
@@ -70,19 +73,22 @@ def get_counts_per_cell(x: csr_matrix):
 def get_counts_from_tpm(tpm: csr_matrix, technology: str) -> csr_matrix:
     """
     Convert TPM (Transcripts Per Million) values to estimated count data.
-    
+
     Args:
         tpm (csr_matrix): Sparse matrix of TPM values
         technology (str): Sequencing technology used
-        
+
     Returns:
         csr_matrix: Estimated count data
-        
+
     Raises:
         NotImplementedError: If the sequencing technology is not recognized
     """
     tpm = tpm.copy()
-    if any(technology == sequencing_tech for sequencing_tech in [SEQ_10x, MICROWELL, MICROWELL_SEQ, SEQWELL]):
+    if any(
+        technology == sequencing_tech
+        for sequencing_tech in [SEQ_10x, MICROWELL, MICROWELL_SEQ, SEQWELL]
+    ):
         library_sizes = np.zeros(tpm.shape[0])
         const = get_counts_per_cell(tpm).mean()
         for n_row in range(tpm.shape[0]):
@@ -92,8 +98,10 @@ def get_counts_from_tpm(tpm: csr_matrix, technology: str) -> csr_matrix:
 
         counts = diags(library_sizes / const) * tpm
         counts.data = np.round(counts.data)
-        _LOGGER.info(f"Converting TPMs to counts by estimating library size. Estimated library size:\n"
-                     f" Mean: {library_sizes.mean()}\n Max: {library_sizes.max()}\n Min: {library_sizes.min()}")
+        _LOGGER.info(
+            f"Converting TPMs to counts by estimating library size. Estimated library size:\n"
+            f" Mean: {library_sizes.mean()}\n Max: {library_sizes.max()}\n Min: {library_sizes.min()}"
+        )
     elif technology == SEQ_SS2:
         _LOGGER.info("Converting TPMs to counts by rounding.")
         counts = tpm.copy()
@@ -107,11 +115,11 @@ def get_counts_from_tpm(tpm: csr_matrix, technology: str) -> csr_matrix:
 def normalize(counts: csr_matrix, target_counts=1e5) -> csr_matrix:
     """
     Normalize counts to a target sum per cell.
-    
+
     Args:
         counts (csr_matrix): Raw count data
         target_counts (float): Target sum for each cell after normalization
-        
+
     Returns:
         csr_matrix: Normalized count data
     """
@@ -120,20 +128,22 @@ def normalize(counts: csr_matrix, target_counts=1e5) -> csr_matrix:
     return counts
 
 
-def get_tpm_counts(input, count_type: str, technology: str) -> Tuple[csr_matrix, csr_matrix]:
+def get_tpm_counts(
+    input, count_type: str, technology: str
+) -> Tuple[csr_matrix, csr_matrix]:
     """
     Process input data to get both TPM and count matrices.
-    
+
     Args:
         input: Input count or TPM data
         count_type (str): Type of count data provided
         technology (str): Sequencing technology used
-        
+
     Returns:
         Tuple[csr_matrix, csr_matrix]: TPM values and count data
     """
     _LOGGER.info(f"Found {count_type} count type.")
-    if count_type in ['Exp_data_UMIcounts', "Exp_data_UMIcounts_10X"]:
+    if count_type in ["Exp_data_UMIcounts", "Exp_data_UMIcounts_10X"]:
         counts = input.copy()
         tpm = normalize(input)
         return tpm, counts
@@ -146,11 +156,11 @@ def get_tpm_counts(input, count_type: str, technology: str) -> Tuple[csr_matrix,
 def set_tpm_counts(adata: anndata.AnnData, technology: str) -> anndata.AnnData:
     """
     Set TPM and count data in AnnData object and perform log transformation.
-    
+
     Args:
         adata (anndata.AnnData): Input data object
         technology (str): Sequencing technology used
-        
+
     Returns:
         anndata.AnnData: Processed data object with TPM and counts
     """
@@ -164,16 +174,17 @@ def set_tpm_counts(adata: anndata.AnnData, technology: str) -> anndata.AnnData:
     return adata
 
 
-def remove_low_count_cells(adata: anndata.AnnData, min_counts: Optional[int],
-                           min_genes: Optional[int]) -> anndata.AnnData:
+def remove_low_count_cells(
+    adata: anndata.AnnData, min_counts: Optional[int], min_genes: Optional[int]
+) -> anndata.AnnData:
     """
     Filter cells based on minimum count and gene expression thresholds.
-    
+
     Args:
         adata (anndata.AnnData): Input data object
         min_counts (Optional[int]): Minimum counts required per cell
         min_genes (Optional[int]): Minimum genes required per cell
-        
+
     Returns:
         anndata.AnnData: Filtered data object
     """
@@ -190,13 +201,13 @@ def remove_low_count_cells(adata: anndata.AnnData, min_counts: Optional[int],
 def subset_malignant(adata: anndata.AnnData) -> anndata.AnnData:
     """
     Subset data to include only malignant cells.
-    
+
     Args:
         adata (anndata.AnnData): Input data object
-        
+
     Returns:
         anndata.AnnData: Data object containing only malignant cells
-        
+
     Raises:
         ValueError: If malignant cells cannot be identified
     """
@@ -206,7 +217,8 @@ def subset_malignant(adata: anndata.AnnData) -> anndata.AnnData:
         idx = adata.obs[MALIGNANT] == "yes"
     elif MALIGNANT in adata.obs["cell_type"].str.lower().values:
         _LOGGER.info(
-            f"Used cell_types {adata.obs.cell_type.unique().tolist()} to find malignant cells.")
+            f"Used cell_types {adata.obs.cell_type.unique().tolist()} to find malignant cells."
+        )
         idx = adata.obs["cell_type"].str.lower() == MALIGNANT
     else:
         raise ValueError("No way of determining which cells are malignant.")
@@ -219,13 +231,13 @@ def subset_malignant(adata: anndata.AnnData) -> anndata.AnnData:
 def determine_seq_technology(adata: anndata.AnnData):
     """
     Determine the sequencing technology used from the AnnData object.
-    
+
     Args:
         adata (anndata.AnnData): Input data object
-        
+
     Returns:
         str: Sequencing technology identifier
-        
+
     Raises:
         KeyError: If technology information is missing
         ValueError: If multiple technologies are found
@@ -244,17 +256,18 @@ def determine_seq_technology(adata: anndata.AnnData):
 def remove_high_mt_cells(adata: anndata.AnnData, max_pct_mt: float) -> anndata.AnnData:
     """
     Remove cells with high mitochondrial gene expression.
-    
+
     Args:
         adata (anndata.AnnData): Input data object
         max_pct_mt (float): Maximum percentage of mitochondrial counts allowed
-        
+
     Returns:
         anndata.AnnData: Filtered data object
     """
     adata.var["mt"] = adata.var_names.str.startswith("MT-")
-    sc.pp.calculate_qc_metrics(adata, qc_vars=["mt"], percent_top=None, log1p=False,
-                               inplace=True)
+    sc.pp.calculate_qc_metrics(
+        adata, qc_vars=["mt"], percent_top=None, log1p=False, inplace=True
+    )
     adata = adata[adata.obs["pct_counts_mt"] <= max_pct_mt].copy()
     _LOGGER.info(f"Kept {adata.n_obs} cells after removing high MT cells.")
     return adata
@@ -263,30 +276,32 @@ def remove_high_mt_cells(adata: anndata.AnnData, max_pct_mt: float) -> anndata.A
 def remove_samples(adata: anndata.AnnData) -> anndata.AnnData:
     """
     Remove samples with fewer than 50 cells in G1 phase.
-    
+
     Args:
         adata (anndata.AnnData): Input data object
-        
+
     Returns:
         anndata.AnnData: Filtered data object
     """
     obs = adata.obs.copy()
-    obs_no_cc = obs[obs["phase"]=="G1"]
+    obs_no_cc = obs[obs["phase"] == "G1"]
     cells_per_sample = obs_no_cc[SAMPLE].value_counts()
 
     samples_to_keep = cells_per_sample[cells_per_sample > 50].index.tolist()
     adata = adata[adata.obs[SAMPLE].isin(samples_to_keep)].copy()
-    _LOGGER.info(f"Removed {cells_per_sample.shape[0] - len(samples_to_keep)} of {cells_per_sample.shape[0]} samples.")
+    _LOGGER.info(
+        f"Removed {cells_per_sample.shape[0] - len(samples_to_keep)} of {cells_per_sample.shape[0]} samples."
+    )
     return adata
 
 
 def r_names(adata: anndata.AnnData) -> anndata.AnnData:
     """
     Convert variable and observation names to R-compatible format.
-    
+
     Args:
         adata (anndata.AnnData): Input data object
-        
+
     Returns:
         anndata.AnnData: Data object with R-compatible names
     """
@@ -296,44 +311,54 @@ def r_names(adata: anndata.AnnData) -> anndata.AnnData:
     return adata
 
 
-def remove_excluded_samples(adata: sc.AnnData, excluded_samples: List[str]) -> sc.AnnData:
+def remove_excluded_samples(
+    adata: sc.AnnData, excluded_samples: List[str]
+) -> sc.AnnData:
     """
     Remove specified samples from the dataset.
-    
+
     Args:
         adata (sc.AnnData): Input data object
         excluded_samples (List[str]): List of sample names to exclude
-        
+
     Returns:
         sc.AnnData: Filtered data object
     """
     _LOGGER.info(f"Anndata contains {adata.obs[SAMPLE].unique().tolist()} as samples.")
     adata = adata[~adata.obs[SAMPLE].isin(excluded_samples)].copy()
-    _LOGGER.info(f"After removing excluded samples anndata contains {adata.obs[SAMPLE].unique().tolist()} as samples.")
+    _LOGGER.info(
+        f"After removing excluded samples anndata contains {adata.obs[SAMPLE].unique().tolist()} as samples."
+    )
     return adata
 
 
-def preprocessing(adata: anndata.AnnData, excluded_samples: List[str], min_genes: int, min_counts: int,
-                  max_pct_mt: float) -> anndata.AnnData:
+def preprocessing(
+    adata: anndata.AnnData,
+    excluded_samples: List[str],
+    min_genes: int,
+    min_counts: int,
+    max_pct_mt: float,
+) -> anndata.AnnData:
     """
     Perform complete preprocessing pipeline on single-cell RNA sequencing data.
-    
+
     Args:
         adata (anndata.AnnData): Input data object
         excluded_samples (List[str]): List of sample names to exclude
         min_genes (int): Minimum number of genes required per cell
         min_counts (int): Minimum number of counts required per cell
         max_pct_mt (float): Maximum percentage of mitochondrial counts allowed
-        
+
     Returns:
         anndata.AnnData: Fully preprocessed data object
     """
     _LOGGER.info(
         f"Started preprocessing with {adata.n_obs} cells, {adata.n_vars} genes and "
-        f"{adata.obs[SAMPLE].nunique()} samples.")
+        f"{adata.obs[SAMPLE].nunique()} samples."
+    )
 
     if "normalized_Exp_data_TPM" == adata.uns[COUNT_TYPE]:
-        adata.X.data = (2 ** adata.X.data) - 1
+        adata.X.data = (2**adata.X.data) - 1
 
     technology = determine_seq_technology(adata)
     adata = subset_malignant(adata)
@@ -348,7 +373,8 @@ def preprocessing(adata: anndata.AnnData, excluded_samples: List[str], min_genes
     sc.pp.filter_genes(adata, min_cells=int(0.001 * adata.n_obs))
     _LOGGER.info(
         f"Finished preprocessing with {adata.n_obs} cells, {adata.n_vars} genes and "
-        f"{adata.obs[SAMPLE].nunique()} samples.")
+        f"{adata.obs[SAMPLE].nunique()} samples."
+    )
     return adata
 
 
@@ -356,9 +382,13 @@ def read_anndata(path: PathLike) -> anndata.AnnData:
     _LOGGER.info(f"Reading Anndata from {path}.")
     adata = anndata.read_h5ad(path)
     if adata.obs_names.str.isdigit().any():
-        _LOGGER.info("Found integers in adata.obs_names appending sample name "
-                     "to ensure casting to strings.")
-        adata.obs_names = adata.obs_names.astype(str) + "_" + adata.obs[SAMPLE].astype(str)
+        _LOGGER.info(
+            "Found integers in adata.obs_names appending sample name "
+            "to ensure casting to strings."
+        )
+        adata.obs_names = (
+            adata.obs_names.astype(str) + "_" + adata.obs[SAMPLE].astype(str)
+        )
     adata.var_names_make_unique()
     adata.obs_names_make_unique()
     return adata
@@ -373,24 +403,112 @@ def write_anndata(adata: anndata.AnnData, output_path: PathLike) -> None:
 
 
 def score_cell_cycle(adata: anndata.AnnData) -> anndata.AnnData:
-    s_genes = ['MCM5', 'PCNA', 'TYMS', 'FEN1', 'MCM2', 'MCM4', 'RRM1', 'UNG',
-               'GINS2', 'MCM6', 'CDCA7', 'DTL', 'PRIM1', 'UHRF1', 'MLF1IP',
-               'HELLS', 'RFC2', 'RPA2', 'NASP', 'RAD51AP1', 'GMNN', 'WDR76',
-               'SLBP', 'CCNE2', 'UBR7', 'POLD3', 'MSH2', 'ATAD2', 'RAD51', 'RRM2',
-               'CDC45', 'CDC6', 'EXO1', 'TIPIN', 'DSCC1', 'BLM', 'CASP8AP2',
-               'USP1', 'CLSPN', 'POLA1', 'CHAF1B', 'BRIP1', 'E2F8']
+    s_genes = [
+        "MCM5",
+        "PCNA",
+        "TYMS",
+        "FEN1",
+        "MCM2",
+        "MCM4",
+        "RRM1",
+        "UNG",
+        "GINS2",
+        "MCM6",
+        "CDCA7",
+        "DTL",
+        "PRIM1",
+        "UHRF1",
+        "MLF1IP",
+        "HELLS",
+        "RFC2",
+        "RPA2",
+        "NASP",
+        "RAD51AP1",
+        "GMNN",
+        "WDR76",
+        "SLBP",
+        "CCNE2",
+        "UBR7",
+        "POLD3",
+        "MSH2",
+        "ATAD2",
+        "RAD51",
+        "RRM2",
+        "CDC45",
+        "CDC6",
+        "EXO1",
+        "TIPIN",
+        "DSCC1",
+        "BLM",
+        "CASP8AP2",
+        "USP1",
+        "CLSPN",
+        "POLA1",
+        "CHAF1B",
+        "BRIP1",
+        "E2F8",
+    ]
 
-    g2m_genes = ['HMGB2', 'CDK1', 'NUSAP1', 'UBE2C', 'BIRC5', 'TPX2', 'TOP2A',
-                 'NDC80', 'CKS2', 'NUF2', 'CKS1B', 'MKI67', 'TMPO', 'CENPF',
-                 'TACC3', 'FAM64A', 'SMC4', 'CCNB2', 'CKAP2L', 'CKAP2', 'AURKB',
-                 'BUB1', 'KIF11', 'ANP32E', 'TUBB4B', 'GTSE1', 'KIF20B', 'HJURP',
-                 'CDCA3', 'HN1', 'CDC20', 'TTK', 'CDC25C', 'KIF2C', 'RANGAP1',
-                 'NCAPD2', 'DLGAP5', 'CDCA2', 'CDCA8', 'ECT2', 'KIF23', 'HMMR',
-                 'AURKA', 'PSRC1', 'ANLN', 'LBR', 'CKAP5', 'CENPE', 'CTCF', 'NEK2',
-                 'G2E3', 'GAS2L3', 'CBX5', 'CENPA']
+    g2m_genes = [
+        "HMGB2",
+        "CDK1",
+        "NUSAP1",
+        "UBE2C",
+        "BIRC5",
+        "TPX2",
+        "TOP2A",
+        "NDC80",
+        "CKS2",
+        "NUF2",
+        "CKS1B",
+        "MKI67",
+        "TMPO",
+        "CENPF",
+        "TACC3",
+        "FAM64A",
+        "SMC4",
+        "CCNB2",
+        "CKAP2L",
+        "CKAP2",
+        "AURKB",
+        "BUB1",
+        "KIF11",
+        "ANP32E",
+        "TUBB4B",
+        "GTSE1",
+        "KIF20B",
+        "HJURP",
+        "CDCA3",
+        "HN1",
+        "CDC20",
+        "TTK",
+        "CDC25C",
+        "KIF2C",
+        "RANGAP1",
+        "NCAPD2",
+        "DLGAP5",
+        "CDCA2",
+        "CDCA8",
+        "ECT2",
+        "KIF23",
+        "HMMR",
+        "AURKA",
+        "PSRC1",
+        "ANLN",
+        "LBR",
+        "CKAP5",
+        "CENPE",
+        "CTCF",
+        "NEK2",
+        "G2E3",
+        "GAS2L3",
+        "CBX5",
+        "CENPA",
+    ]
 
     sc.tl.score_genes_cell_cycle(adata, s_genes=s_genes, g2m_genes=g2m_genes)
     return adata
+
 
 def add_labels(adata, labels_path) -> sc.AnnData:
     _LOGGER.info(f"Reading labels from {labels_path}")
@@ -400,7 +518,6 @@ def add_labels(adata, labels_path) -> sc.AnnData:
     adata = adata[~adata.obs["celltype"].isna()].copy()
     _LOGGER.info(f"Added labels to {adata.n_obs} cells.")
     return adata
-    
 
 
 def make_datadir(output):
@@ -415,14 +532,19 @@ def main():
     print(args.labels_path)
     if args.labels_path.name.endswith(".csv"):
         adata = add_labels(adata, args.labels_path)
-    
+
     if args.skip_preprocessing:
         _LOGGER.info("Skipping preprocessing.")
     else:
-        adata = preprocessing(adata, excluded_samples=args.excluded_sample, min_genes=args.min_genes,
-                          max_pct_mt=args.max_pct_mt, min_counts=args.min_counts)
+        adata = preprocessing(
+            adata,
+            excluded_samples=args.excluded_sample,
+            min_genes=args.min_genes,
+            max_pct_mt=args.max_pct_mt,
+            min_counts=args.min_counts,
+        )
     write_anndata(adata, args.output)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

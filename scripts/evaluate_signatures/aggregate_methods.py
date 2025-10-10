@@ -2,7 +2,6 @@ import pathlib
 
 import pandas as pd
 import argparse
-import pathlib as pl
 
 
 def get_args():

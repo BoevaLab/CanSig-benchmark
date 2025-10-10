@@ -13,8 +13,8 @@ _LOGGER = logging.getLogger(__name__)
 _SAMPLE_KEY = "sample"
 _LATENT = "latent"
 
-_ARGS = [("-n", "--n-hvg", str),
-         ("-b", "--batch-key", str)]
+_ARGS = [("-n", "--n-hvg", str), ("-b", "--batch-key", str)]
+
 
 def main():
     args = get_args(args=_ARGS)
@@ -25,9 +25,12 @@ def main():
     idx = adata.obs_names.copy()
     sorted_idx = np.argsort(adata.obs[_SAMPLE_KEY])
     sorted_adata = adata[sorted_idx].copy()
-    sc.external.pp.scanorama_integrate(sorted_adata, _SAMPLE_KEY, adjusted_basis=_LATENT)
+    sc.external.pp.scanorama_integrate(
+        sorted_adata, _SAMPLE_KEY, adjusted_basis=_LATENT
+    )
     adata = sorted_adata[idx].copy()
     save_latent(args.output, adata.obsm[_LATENT], adata.obs_names)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

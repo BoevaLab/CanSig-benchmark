@@ -10,7 +10,7 @@ import pandas as pd
 import pynndescent
 import scanpy as sc
 from scanpy.neighbors import _compute_connectivities_umap
-from scib_metrics import graph_connectivity, clisi_knn, ilisi_knn
+from scib_metrics import graph_connectivity
 from scib_metrics import kbet_per_label
 from scib_metrics.utils import check_square, compute_simpson_index
 from scib_metrics.utils._diffusion_nn import _compute_transitions, _compute_eigen
@@ -22,15 +22,13 @@ from sklearn.utils import check_array
 from utils import read_adata
 
 
-import warnings
 from numba.core.errors import NumbaDeprecationWarning
+
 warnings.filterwarnings("ignore", category=NumbaDeprecationWarning)
 
 
 logging.basicConfig(
-    level=logging.INFO,
-    format='[%(asctime)s] %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    level=logging.INFO, format="[%(asctime)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,7 +40,6 @@ _SAMPLE = "sample"
 _15_NEIGHBORS_KEY = "15"
 _50_NEIGHBORS_KEY = "50"
 _90_NEIGHBORS_KEY = "90"
-
 
 
 def convert_knn_graph_to_idx(X: csr_matrix) -> tuple[np.ndarray, np.ndarray]:
@@ -90,12 +87,16 @@ def lisi_knn(X: csr_matrix, labels: np.ndarray, perplexity: float = None) -> np.
 
     n_labels = len(np.unique(labels))
 
-    simpson = compute_simpson_index(knn_dists, knn_idx, labels, n_labels, perplexity=perplexity)
+    simpson = compute_simpson_index(
+        knn_dists, knn_idx, labels, n_labels, perplexity=perplexity
+    )
     _LOGGER.info(f"Computed LISI for {len(labels)} cells with {n_labels} unique labels")
     return 1 / simpson
 
 
-def ilisi_knn(X: csr_matrix, batches: np.ndarray, perplexity: float = None, scale: bool = True) -> np.ndarray:
+def ilisi_knn(
+    X: csr_matrix, batches: np.ndarray, perplexity: float = None, scale: bool = True
+) -> np.ndarray:
     """Compute the integration local inverse simpson index (iLISI) for each cell :cite:p:`korsunsky2019harmony`.
 
     Returns a scaled version of the iLISI score for each cell, by default :cite:p:`luecken2022benchmarking`.
@@ -130,7 +131,9 @@ def ilisi_knn(X: csr_matrix, batches: np.ndarray, perplexity: float = None, scal
     return ilisi
 
 
-def clisi_knn(X: csr_matrix, labels: np.ndarray, perplexity: float = None, scale: bool = True) -> np.ndarray:
+def clisi_knn(
+    X: csr_matrix, labels: np.ndarray, perplexity: float = None, scale: bool = True
+) -> np.ndarray:
     """Compute the cell-type local inverse simpson index (cLISI) for each cell :cite:p:`korsunsky2019harmony`.
 
     Returns a scaled version of the cLISI score for each cell, by default :cite:p:`luecken2022benchmarking`.
@@ -165,15 +168,23 @@ def clisi_knn(X: csr_matrix, labels: np.ndarray, perplexity: float = None, scale
     return clisi
 
 
-def set_neighbors(adata: sc.AnnData, distances, connectivities: np.ndarray, n_neighbors: int) -> sc.AnnData:
+def set_neighbors(
+    adata: sc.AnnData, distances, connectivities: np.ndarray, n_neighbors: int
+) -> sc.AnnData:
     _LOGGER.info(f"Setting {n_neighbors}-nn Graph.")
     adata.obsp[f"{n_neighbors}_connectivities"] = connectivities
     adata.obsp[f"{n_neighbors}_distances"] = distances
 
-    adata.uns[f"{n_neighbors}"] = {'connectivities_key': f'{n_neighbors}_connectivities',
-                                   'distances_key': f'{n_neighbors}_distances',
-                                   'params': {'n_neighbors': n_neighbors, 'method': 'umap', 'random_state': 0,
-                                              'metric': 'euclidean'}}
+    adata.uns[f"{n_neighbors}"] = {
+        "connectivities_key": f"{n_neighbors}_connectivities",
+        "distances_key": f"{n_neighbors}_distances",
+        "params": {
+            "n_neighbors": n_neighbors,
+            "method": "umap",
+            "random_state": 0,
+            "metric": "euclidean",
+        },
+    }
 
     return adata
 
@@ -202,7 +213,9 @@ def diffusion_nn(X: csr_matrix, k: int, n_comps: int = 100):
     -------
     Neighbors graph
     """
-    _LOGGER.info(f"Computing diffusion-based neighbors with k={k} and n_comps={n_comps}")
+    _LOGGER.info(
+        f"Computing diffusion-based neighbors with k={k} and n_comps={n_comps}"
+    )
     transitions = _compute_transitions(X)
     evals, evecs = _compute_eigen(transitions, n_comps=n_comps)
     evals += 1e-8  # Avoid division by zero
@@ -213,7 +226,9 @@ def diffusion_nn(X: csr_matrix, k: int, n_comps: int = 100):
     nn_obj = pynndescent.NNDescent(embedding, n_neighbors=k + 1)
     neigh_inds, neigh_distances = nn_obj.neighbor_graph
 
-    distances, connectivites = _compute_connectivities_umap(neigh_inds, neigh_distances, X.shape[0], k)
+    distances, connectivites = _compute_connectivities_umap(
+        neigh_inds, neigh_distances, X.shape[0], k
+    )
     _LOGGER.info("Completed diffusion-based neighbor computation")
 
     return distances, connectivites
@@ -225,31 +240,58 @@ def add_latent(path: str, adata: sc.AnnData) -> sc.AnnData:
         _LOGGER.info(f"Loading graph from {path}")
         data = np.load(path, allow_pickle=True)
         # Numpy saves everything as arrays. .item retrieves the original object.
-        adata = set_neighbors(adata, connectivities=data["connectivities"].item(), distances=data["distances"].item(), n_neighbors=15)
+        adata = set_neighbors(
+            adata,
+            connectivities=data["connectivities"].item(),
+            distances=data["distances"].item(),
+            n_neighbors=15,
+        )
         distances, connectivities = diffusion_nn(adata.obsp["15_connectivities"], 50)
-        adata = set_neighbors(adata, connectivities=connectivities, distances=distances, n_neighbors=50)
+        adata = set_neighbors(
+            adata, connectivities=connectivities, distances=distances, n_neighbors=50
+        )
         distances, connectivities = diffusion_nn(adata.obsp["15_connectivities"], 90)
-        adata = set_neighbors(adata, connectivities=connectivities, distances=distances, n_neighbors=90)
+        adata = set_neighbors(
+            adata, connectivities=connectivities, distances=distances, n_neighbors=90
+        )
     elif path.endswith(".csv"):
         _LOGGER.info(f"Loading latents from {path}")
 
         latent = pd.read_csv(path, index_col=0)
 
-        if len(latent.index) != len(adata.obs_names) or set(adata.obs_names) != set(latent.index):
-            raise ValueError("Mismatch in index of the latent space and the adata. Something went wrong.")
+        if len(latent.index) != len(adata.obs_names) or set(adata.obs_names) != set(
+            latent.index
+        ):
+            raise ValueError(
+                "Mismatch in index of the latent space and the adata. Something went wrong."
+            )
 
         latent = latent.loc[adata.obs_names]
         if np.any(latent.index != adata.obs_names):
-            raise ValueError("Mismatch in index of the latent space and the adata. Something went wrong.")
+            raise ValueError(
+                "Mismatch in index of the latent space and the adata. Something went wrong."
+            )
         adata.obsm[_LATENT] = latent.values
-        _LOGGER.info(f"Computing knn-graphs")
+        _LOGGER.info("Computing knn-graphs")
         for n_neighbors in [15, 50, 90]:
-            try: 
-                sc.pp.neighbors(adata, use_rep=_LATENT, n_neighbors=n_neighbors, key_added=str(n_neighbors), random_state=42)
+            try:
+                sc.pp.neighbors(
+                    adata,
+                    use_rep=_LATENT,
+                    n_neighbors=n_neighbors,
+                    key_added=str(n_neighbors),
+                    random_state=42,
+                )
             except Exception as e:
                 print(e)
-                sc.pp.neighbors(adata, use_rep=_LATENT, n_neighbors=n_neighbors, key_added=str(n_neighbors), random_state=52)
-                
+                sc.pp.neighbors(
+                    adata,
+                    use_rep=_LATENT,
+                    n_neighbors=n_neighbors,
+                    key_added=str(n_neighbors),
+                    random_state=52,
+                )
+
     else:
         raise ValueError(f"Unknown file type, {path}.")
     _LOGGER.info("Completed adding latent representation")
@@ -258,17 +300,26 @@ def add_latent(path: str, adata: sc.AnnData) -> sc.AnnData:
 
 def get_ari_nmi(adata: sc.AnnData) -> pd.DataFrame:
     _LOGGER.info("Computing ari and nmi")
-    metrics = {"ARI": adjusted_rand_score,
-               "NMI": normalized_mutual_info_score}
+    metrics = {"ARI": adjusted_rand_score, "NMI": normalized_mutual_info_score}
     resolutions = [0.1 * i for i in range(2, 11)]
     n_randoms = 5
-    results = pd.DataFrame(None, columns=list(range(n_randoms)),
-                           index=pd.MultiIndex.from_product([metrics.keys(), resolutions]))
+    results = pd.DataFrame(
+        None,
+        columns=list(range(n_randoms)),
+        index=pd.MultiIndex.from_product([metrics.keys(), resolutions]),
+    )
 
     for random_seed, res in product(range(n_randoms), resolutions):
-        _LOGGER.info(f"Computing leiden for {res} resolution and random seed {random_seed}.")
-        sc.tl.leiden(adata, resolution=res, random_state=random_seed, key_added=_LEIDEN,
-                        neighbors_key=_15_NEIGHBORS_KEY)
+        _LOGGER.info(
+            f"Computing leiden for {res} resolution and random seed {random_seed}."
+        )
+        sc.tl.leiden(
+            adata,
+            resolution=res,
+            random_state=random_seed,
+            key_added=_LEIDEN,
+            neighbors_key=_15_NEIGHBORS_KEY,
+        )
         for metric_name, metric in metrics.items():
             metric_value = metric(adata.obs[_LEIDEN], adata.obs[_CELLTYPE])
             _LOGGER.info(f"{metric_name}: {metric_value}.")
@@ -281,29 +332,38 @@ def get_kbets(adata) -> dict:
     _LOGGER.info("Computing k-bet per label")
     labels = adata.obs[_CELLTYPE].values
     batchs = adata.obs[_SAMPLE].values
-    results = {"kbet_per_label": kbet_per_label(adata.obsp[_50_NEIGHBORS_KEY + "_connectivities"],
-                                               batchs, labels)}
+    results = {
+        "kbet_per_label": kbet_per_label(
+            adata.obsp[_50_NEIGHBORS_KEY + "_connectivities"], batchs, labels
+        )
+    }
     _LOGGER.info("Completed k-bet computation")
     return results
 
 
 def get_clisi_knn(adata: anndata.AnnData) -> dict:
     _LOGGER.info("Computing cLISI using k-NN")
-    clisi = clisi_knn(adata.obsp[_90_NEIGHBORS_KEY + "_distances"], adata.obs[_CELLTYPE].values)
+    clisi = clisi_knn(
+        adata.obsp[_90_NEIGHBORS_KEY + "_distances"], adata.obs[_CELLTYPE].values
+    )
     _LOGGER.info("Completed cLISI computation")
     return {"clisi": clisi}
 
 
 def get_ilisis_knn(adata: anndata.AnnData) -> dict:
     _LOGGER.info("Computing iLISI using k-NN")
-    ilisi = ilisi_knn(adata.obsp[_90_NEIGHBORS_KEY + "_distances"], adata.obs[_SAMPLE].values)
+    ilisi = ilisi_knn(
+        adata.obsp[_90_NEIGHBORS_KEY + "_distances"], adata.obs[_SAMPLE].values
+    )
     _LOGGER.info("Completed iLISI computation")
     return {"ilisis": ilisi}
 
 
 def get_graph_connectivity(adata: anndata.AnnData) -> dict:
     _LOGGER.info("Computing graph connectivity")
-    graph_connect = graph_connectivity(adata.obsp[_15_NEIGHBORS_KEY + "_distances"], adata.obs[_CELLTYPE].values)
+    graph_connect = graph_connectivity(
+        adata.obsp[_15_NEIGHBORS_KEY + "_distances"], adata.obs[_CELLTYPE].values
+    )
     _LOGGER.info("Completed graph connectivity computation")
     return {"graph_connect": graph_connect}
 
@@ -348,14 +408,16 @@ def main():
     _LOGGER.info(f"Loading data from {args.data_path}")
     adata = read_adata(args.data_path, n_hvg=None, batch_key=False, remove_cycling=True)
     adata = add_latent(args.latent, adata)
-    
+
     _LOGGER.info("Computing metrics")
     results = get_kbets(adata)
     results.update(get_ilisis_knn(adata))
     results.update(get_clisi_knn(adata))
     results.update(get_graph_connectivity(adata))
     clustering_results = get_ari_nmi(adata)
-    best_clustering = clustering_results.xs(clustering_results.mean(1).groupby(level=1).mean().idxmax(), level=1)
+    best_clustering = clustering_results.xs(
+        clustering_results.mean(1).groupby(level=1).mean().idxmax(), level=1
+    )
     results.update(dict(best_clustering.mean(1)))
     save_results(args.output, results)
 
@@ -370,5 +432,5 @@ def main():
     _LOGGER.info("Main execution completed successfully")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

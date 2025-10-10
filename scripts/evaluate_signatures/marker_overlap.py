@@ -11,20 +11,28 @@ logging.root.setLevel(logging.INFO)
 
 _LOGGER = logging.getLogger(__name__)
 
+
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--input", "-i", type=str,
-                        help="Path to meta signatures stored in .csv.")
+    parser.add_argument(
+        "--input", "-i", type=str, help="Path to meta signatures stored in .csv."
+    )
     parser.add_argument("--output", "-o", type=str, help="Final results.")
     parser.add_argument("--data-path", "-d", type=str, help="Path to the anndata.")
-    parser.add_argument("--annotation-path", "-a", type=str,
-                        help="Path to the folder holding all the known signatures.")
+    parser.add_argument(
+        "--annotation-path",
+        "-a",
+        type=str,
+        help="Path to the folder holding all the known signatures.",
+    )
     args = parser.parse_args()
     return args
 
 
-def get_overlap(gt_signatures: pd.DataFrame, signatures: pd.DataFrame, var_names: np.array) -> pd.DataFrame:
+def get_overlap(
+    gt_signatures: pd.DataFrame, signatures: pd.DataFrame, var_names: np.array
+) -> pd.DataFrame:
     results = pd.DataFrame(columns=gt_signatures.columns, index=signatures.columns)
 
     for gt_sig, gt_list in gt_signatures.items():
@@ -46,6 +54,5 @@ def main() -> None:
     overlap.to_csv(args.output)
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

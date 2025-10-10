@@ -20,7 +20,6 @@ _GROUND_TRUTH = "ground_truth_signature"
 _G1 = "G1"
 
 
-
 _NORMMETHOD = Literal["rank", "log_rank", "log", "custom"]
 _SCORERNAME = Literal["ssgsea", "average"]
 
@@ -67,11 +66,10 @@ class AvgBulkScorer:
             return df.mean(axis=1)
 
 
-
 def get_all_scores(
-        bulk_values: pd.DataFrame,
-        metasignatures: pd.DataFrame,
-        truesignatures: pd.DataFrame
+    bulk_values: pd.DataFrame,
+    metasignatures: pd.DataFrame,
+    truesignatures: pd.DataFrame,
 ) -> pd.DataFrame:
     """Computes the scores for all metasignatures and true signatures using
         the appropriate scorer function
@@ -115,9 +113,7 @@ def get_all_scores(
 
 
 def score_dataset(
-        bulk_data: pd.DataFrame,
-        metasignature: pd.DataFrame,
-        truesignature: pd.DataFrame
+    bulk_data: pd.DataFrame, metasignature: pd.DataFrame, truesignature: pd.DataFrame
 ) -> Tuple[List[str], List[str], pd.DataFrame]:
     """Main function, computes the bulk score for metasignatures and reference signatures
 
@@ -148,16 +144,20 @@ def score_dataset(
     return truesignature.columns.to_list(), metasignature.columns.to_list(), all_scores
 
 
-
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--input", "-i", type=str,
-                        help="Path to meta signatures stored in .csv.")
+    parser.add_argument(
+        "--input", "-i", type=str, help="Path to meta signatures stored in .csv."
+    )
     parser.add_argument("--output", "-o", type=str, help="Final results.")
     parser.add_argument("--data-path", "-d", type=str, help="Path to the anndata.")
-    parser.add_argument("--annotation-path", "-a", type=str,
-                        help="Path to the folder holding all the known signatures.")
+    parser.add_argument(
+        "--annotation-path",
+        "-a",
+        type=str,
+        help="Path to the folder holding all the known signatures.",
+    )
     parser.add_argument("--type", type=str, help="Either scRNA or bulk.")
 
     args = parser.parse_args()
@@ -176,21 +176,23 @@ def get_scores(adata: ad.AnnData, gt_sigs: pd.DataFrame, meta_sigs: pd.DataFrame
     gt_names = score_signature(adata, gt_sigs)
     metasig_names = score_signature(adata, meta_sigs)
 
-    return gt_names, metasig_names, adata.obs[gt_names+metasig_names]
+    return gt_names, metasig_names, adata.obs[gt_names + metasig_names]
 
 
 def score_signature(adata, sigs: pd.DataFrame) -> List[str]:
     signatures = []
     for sig_name in sigs.columns:
         gene_list = sigs[sig_name].dropna().values[:50]
-        if len(adata.var_names.intersection(gene_list))==0:
+        if len(adata.var_names.intersection(gene_list)) == 0:
             continue
         sc.tl.score_genes(adata, gene_list=gene_list, score_name=sig_name)
         signatures.append(sig_name)
     return signatures
 
 
-def corr_signatures(df: pd.DataFrame, gt_names: List[str],  meta_sigs_names: List[str]) -> pd.DataFrame:
+def corr_signatures(
+    df: pd.DataFrame, gt_names: List[str], meta_sigs_names: List[str]
+) -> pd.DataFrame:
     corr = df[gt_names + meta_sigs_names].corr(method="spearman")
     corr[_SIG_TYPE] = _META_SIG
     corr.loc[corr.index.isin(gt_names), _SIG_TYPE] = _GROUND_TRUTH
@@ -208,15 +210,14 @@ def main() -> None:
         gt_names, meta_sigs_names, scores = get_scores(adata, gt_sigs, signatures)
     elif args.type.lower() == "bulk":
         bulk_data = pd.read_csv(args.data_path, index_col=0)
-        gt_names, meta_sigs_names, scores = score_dataset(bulk_data=bulk_data,
-                               truesignature=gt_sigs,
-                               metasignature=signatures)
+        gt_names, meta_sigs_names, scores = score_dataset(
+            bulk_data=bulk_data, truesignature=gt_sigs, metasignature=signatures
+        )
     else:
         raise ValueError(f"Unkown scoring type {args.type}.")
 
     corr = corr_signatures(scores, gt_names, meta_sigs_names)
     corr.to_csv(args.output)
-
 
 
 if __name__ == "__main__":

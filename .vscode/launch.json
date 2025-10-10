@@ -1,0 +1,47 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File with Arguments",
+            "type": "debugpy",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/scripts:${env:PYTHONPATH}"
+            },
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "--data-path",
+                "/local/home/fbarkmann/project/CanSig-benchmark/results/integration/debug2/data/preprocessed/neftel_ss2_all_0.h5ad",
+                "--latent",
+                "/local/home/fbarkmann/project/CanSig-benchmark/results/integration/debug2/integration/unintegrated/neftel_ss2_all_0/4000/True/latent.csv",
+                "--output",
+                "/local/home/fbarkmann/project/CanSig-benchmark/results/integration/debug2/eval/neftel_ss2_all_0/4000/True/unintegrated/metrics.csv",
+                "--output-umap",
+                "/local/home/fbarkmann/project/CanSig-benchmark/results/integration/debug2/plotting/neftel_ss2_all_0/4000/True/unintegrated/umap.csv",
+                "--plotting",
+                "True"
+            ]
+        },
+        {
+            "name": "eval",
+            "type": "debugpy",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/scripts:${env:PYTHONPATH}"
+            },
+            "request": "launch",
+            "program": "scripts/evaluate_signatures/eval.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-i",
+                "/local/home/fbarkmann/project/CanSig-benchmark/results/signatures/scc/corrs/scrna/scanorama/ji_skin_all_1/ji_3/3/4000/True/corrs.csv",
+                "/local/home/fbarkmann/project/CanSig-benchmark/results/signatures/scc/corrs/scrna/scanorama/ji_skin_all_1/ji_3/4/4000/True/corrs.csv", 
+                "/local/home/fbarkmann/project/CanSig-benchmark/results/signatures/scc/corrs/scrna/scanorama/ji_skin_all_1/ji_3/5/4000/True/corrs.csv",
+                "-o",
+                "test.csv"
+            ]
+        }
+}

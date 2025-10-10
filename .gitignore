@@ -6,6 +6,7 @@ docs/build
 lightning_logs/
 labels/
 TCGA_data/
+survival/signatures/
 
 .snakemake
 .cache

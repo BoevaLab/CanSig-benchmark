@@ -1,5 +1,4 @@
 import pathlib as pl
-from argparse import ArgumentParser
 from typing import Literal, Tuple
 
 import numpy as np
@@ -51,9 +50,9 @@ class AvgBulkScorer:
 
 
 def get_data(
-        bulk_file: pl.Path,
-        metasignature_file: pl.Path,
-        truesignature_file: pl.Path,
+    bulk_file: pl.Path,
+    metasignature_file: pl.Path,
+    truesignature_file: pl.Path,
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Helper function to download files
 
@@ -80,9 +79,9 @@ def get_data(
 
 
 def get_all_scores(
-        bulk_values: pd.DataFrame,
-        metasignatures: pd.DataFrame,
-        truesignatures: pd.DataFrame
+    bulk_values: pd.DataFrame,
+    metasignatures: pd.DataFrame,
+    truesignatures: pd.DataFrame,
 ) -> pd.DataFrame:
     """Computes the scores for all metasignatures and true signatures using
         the appropriate scorer function
@@ -126,9 +125,7 @@ def get_all_scores(
 
 
 def score_dataset(
-        bulk_file: pl.Path,
-        metasignature_file: pl.Path,
-        truesignature_file: pl.Path
+    bulk_file: pl.Path, metasignature_file: pl.Path, truesignature_file: pl.Path
 ) -> pd.DataFrame:
     """Main function, computes the bulk score for metasignatures and reference signatures
 
@@ -163,23 +160,3 @@ def score_dataset(
         truesignatures=truesignatures,
     )
     return all_scores
-
-
-def get_args():
-    parser = ArgumentParser()
-    parser.add_argument("--data-path", "-d", type=str)
-    parser.add_argument("--annotation-path", "-a", type=str)
-    parser.add_argument("--metasig-path", "-m", type=str)
-
-    return parser.parse_args()
-
-
-def main():
-    args = get_args()
-    scores = score_dataset(bulk_file=args.data_path,
-                           truesignature_file=args.annotation_path,
-                           metasignature_file=args.metasig_path)
-
-
-if __name__ == '__main__':
-    main()

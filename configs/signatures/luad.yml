@@ -27,6 +27,7 @@ random_seeds: 5
 scenarios:
   kim_lung:
     data_path: data/raw/Kim_lung.h5ad
+    bulk_path: TCGA_data/LUAD/LUAD_gex_fpkm_uq.csv
     signatures:
       - kim_3
 

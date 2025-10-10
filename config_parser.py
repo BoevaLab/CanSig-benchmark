@@ -1,6 +1,5 @@
 import pathlib
 from collections import defaultdict
-from itertools import product
 
 
 class ParsedConfig:
@@ -18,14 +17,14 @@ class ParsedConfig:
             self.random_seed = list(range(config["random_seeds"]))
         else:
             self.random_seed = [0]
-            
+
         if "n_samples" in config:
             self.n_samples = config["n_samples"]
         else:
-            self.n_samples =  ["all"]
-            
+            self.n_samples = ["all"]
+
         self.skip_preprocessing = config.get("skip_preprocessing", False)
-        
+
     def validate_scenarios(self):
         for scenario in self.scenarios.values():
             for signature in scenario["signatures"]:
@@ -44,7 +43,7 @@ class ParsedConfig:
         if self.skip_preprocessing:
             return "--skip-preprocessing"
         return ""
-    
+
     def get_excluded_samples(self, wildcards):
         config = self.get_preprocessing_dict(wildcards)
         return config.get("excluded_samples", None)
@@ -75,13 +74,15 @@ class ParsedConfig:
     def get_data_path(self, wildscards):
         if wildscards.scenario in self.get_scenarios():
             return self.scenarios[wildscards.scenario]["data_path"]
-    
+
     def get_methods(self):
         return list(self.methods.keys())
-    
+
     def get_cansig_metasig_method(self, wildscards):
         if not wildscards.method.startswith("cansig"):
-            raise ValueError(f"This method is only for the use with CanSig but was used with {wildscards.method}")
+            raise ValueError(
+                f"This method is only for the use with CanSig but was used with {wildscards.method}"
+            )
         return self.methods[wildscards.method]["metasig_method"]
 
     def get_n_cluster(self, wildcards):
@@ -111,11 +112,11 @@ class ParsedConfig:
             return scenario["n_samples"]
         else:
             return ["all"]
-        
+
     def get_labels_path(self, wildcards):
         if "labels_path" in self.scenarios[wildcards.scenario]:
             return self.scenarios[wildcards.scenario]["labels_path"]
         return None
-    
+
     def get_mem_scaling(self, wildcards):
         return self.scenarios[wildcards.scenario].get("mem_scaling", 1)

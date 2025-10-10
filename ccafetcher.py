@@ -27,19 +27,23 @@ SAMPLE = "sample"
 def download(url: str, fname: str, chunk_size=1024):
     resp = requests.get(url, stream=True)
     if resp:
-        total = int(resp.headers.get('content-length', 0))
-        with open(fname, 'wb') as file, tqdm(
+        total = int(resp.headers.get("content-length", 0))
+        with (
+            open(fname, "wb") as file,
+            tqdm(
                 desc=fname,
                 total=total,
-                unit='iB',
+                unit="iB",
                 unit_scale=True,
                 unit_divisor=1024,
-        ) as bar:
+            ) as bar,
+        ):
             for data in resp.iter_content(chunk_size=chunk_size):
                 size = file.write(data)
                 bar.update(size)
     else:
         raise ValueError(f"Download from {url} failed")
+
 
 class AnndataDir:
     def __init__(self, path: Pathlike):
@@ -84,7 +88,7 @@ class AnndataDir:
 
     @staticmethod
     def _cast_object_columns_to_string(df: pd.DataFrame) -> pd.DataFrame:
-        object_columns = df.select_dtypes(include='object').columns
+        object_columns = df.select_dtypes(include="object").columns
         if len(object_columns) > 0:
             _LOGGER.info(f"Casting {object_columns.to_list()} to string.")
             df[object_columns] = df[object_columns].fillna("").astype(str)
@@ -121,8 +125,13 @@ class AnndataDir:
         if SAMPLE in metadata.columns:
             if obs.index.isin(metadata[SAMPLE]).all():
                 _LOGGER.info("Merged the metadata on the cell level.")
-                return obs.merge(metadata, how="left", left_index=True,
-                                 right_on=SAMPLE, validate="m:1")
+                return obs.merge(
+                    metadata,
+                    how="left",
+                    left_index=True,
+                    right_on=SAMPLE,
+                    validate="m:1",
+                )
 
         for key_obs, key_metadata in product([SAMPLE, "patient"], [SAMPLE, "patient"]):
             if key_obs in obs.columns and key_metadata in metadata.columns:
@@ -130,16 +139,26 @@ class AnndataDir:
                     _LOGGER.info(
                         f"Merging obs and metadata on {key_obs} and {key_metadata}."
                     )
-                    return obs.merge(metadata, how="left", left_on=key_obs,
-                                     right_on=key_metadata,
-                                     suffixes=(None, "_metadata"), validate="m:1")
+                    return obs.merge(
+                        metadata,
+                        how="left",
+                        left_on=key_obs,
+                        right_on=key_metadata,
+                        suffixes=(None, "_metadata"),
+                        validate="m:1",
+                    )
 
         raise NotImplementedError("Did not find a way to merge the metadata and obs.")
 
 
 class CCCAFetcher:
-    def __init__(self, meta_data: pd.DataFrame, download_dir: Pathlike,
-                 data_column: str = "Data", meta_data_column: str = "Meta_data"):
+    def __init__(
+        self,
+        meta_data: pd.DataFrame,
+        download_dir: Pathlike,
+        data_column: str = "Data",
+        meta_data_column: str = "Meta_data",
+    ):
         self.meta_data_column = meta_data_column
         self.data_column = data_column
         self.meta_data = meta_data
@@ -154,11 +173,13 @@ class CCCAFetcher:
     def fetch_datasets(self, force_download: bool = False) -> None:
         _LOGGER.info("Start downloading datasets.")
         for name, url, metadata_url in self.meta_data[
-            [self.data_column, self.meta_data_column]].itertuples():
+            [self.data_column, self.meta_data_column]
+        ].itertuples():
             _LOGGER.info(f"Downloading: {name}")
             self.fetch_data(url, force_download=force_download, file_extension="zip")
-            self.fetch_data(metadata_url, force_download=force_download,
-                            file_extension="csv")
+            self.fetch_data(
+                metadata_url, force_download=force_download, file_extension="csv"
+            )
 
     def fetch_data(self, url: str, force_download: bool, file_extension: str) -> None:
         data_path = self._url_to_data_path(url, file_extension)
@@ -187,7 +208,8 @@ class CCCAFetcher:
         zpath = self._url_to_data_path(url, file_extension="zip")
         if not (metadata_path.is_file() and zpath.is_file()):
             raise ValueError(
-                f"Dataset {name} has not been downloaded run fetch_datasets.")
+                f"Dataset {name} has not been downloaded run fetch_datasets."
+            )
         _LOGGER.info(f"Reading metadata from {metadata_path}.")
         metadata = pd.read_csv(metadata_path)
         _LOGGER.info(f"Reading zipfile from {zpath}.")
@@ -200,20 +222,19 @@ class CCCAFetcher:
                 adata = adatadir.create_anndata(metadata)
                 data_path = data_dir.joinpath(f"{name}.h5ad")
                 if data_path.is_file():
-                    _LOGGER.info(f"No data already exists.")
+                    _LOGGER.info("No data already exists.")
                     return
                 adata.write_h5ad(data_path)
 
             else:
-                _LOGGER.info(
-                    "Did not find data at the root level. Checking subdirs.")
+                _LOGGER.info("Did not find data at the root level. Checking subdirs.")
                 for subdir in root.iterdir():
                     if not subdir.is_dir():
                         continue
                     adatadir = AnndataDir(subdir)
                     data_path = data_dir.joinpath(f"{name}_{subdir.name}.h5ad")
                     if data_path.is_file():
-                        _LOGGER.info(f"No data already exists.")
+                        _LOGGER.info("No data already exists.")
                         continue
 
                     if not adatadir.is_valid():
@@ -234,24 +255,16 @@ def parse_args():
     return parser.parse_args()
 
 
-# def main():
-#     args = parse_args()
-#     metadata = pd.read_csv(args.metadata)
-#     metadata.index = metadata["Title"].str.split(" ").str[0] + "_" + metadata["Tissue"]
-#     fetcher = CCCAFetcher(metadata, args.download_dir)
-#     if args.fetch:
-#         fetcher.fetch_datasets()
-#     if args.sample is not None and args.dataset_dir:
-#         fetcher.make_anndata(args.dataset_dir, args.sample)
-
 def main():
-    metadata = pd.read_csv("3ca.csv", index_col=0)
+    args = parse_args()
+    metadata = pd.read_csv(args.metadata)
     metadata.index = metadata["Title"].str.split(" ").str[0] + "_" + metadata["Tissue"]
     fetcher = CCCAFetcher(metadata, args.download_dir)
     if args.fetch:
         fetcher.fetch_datasets()
     if args.sample is not None and args.dataset_dir:
         fetcher.make_anndata(args.dataset_dir, args.sample)
+
 
 # def main():
 #     metadata = pd.read_csv("3ca.csv", index_col=0)
@@ -272,5 +285,5 @@ def main():
 #     for i in range(len(all_datasets)):
 #         fetcher.make_anndata("data/raw", i)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
