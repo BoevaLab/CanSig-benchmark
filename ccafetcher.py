@@ -247,10 +247,12 @@ class CCCAFetcher:
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument("--metadata", type=str, required=True)
+    parser.add_argument("--metadata", type=str, required=True, default="3ca.csv")
     parser.add_argument("--download-dir", type=str, required=True)
     parser.add_argument("--dataset-dir", type=str)
-    parser.add_argument("--fetch", default=False)
+    parser.add_argument(
+        "--fetch", action="store_true", default=False, help="Fetch datasets if set."
+    )
     parser.add_argument("--sample", type=int)
     return parser.parse_args()
 

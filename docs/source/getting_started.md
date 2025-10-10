@@ -1,10 +1,10 @@
-# Getting started
+# Getting Started
 
-This repository provides two options for running the Snakemake pipeline: containers hosted on Docker Hub or Conda environments.
-
-## Option 1: Docker Images (Recommended)
+The CanSig-benchmark is a comprehensive benchmarking framework for cancer gene signature methods. This guide will walk you through setting up the environment and preparing the data needed to run the benchmarking pipeline.
 
 ### Environment Setup
+
+The base environment contains Snakemake, Apptainer, and other essential tools needed to orchestrate the benchmarking pipeline. All computational methods are containerized to ensure reproducibility across different systems.
 
 Install the base environment that includes Snakemake and Apptainer:
 
@@ -17,61 +17,46 @@ Activate the base environment:
 conda activate cansig
 ```
 
-### Running the Snakemake Pipeline
+### Data Preparation
 
-Execute the pipeline using Apptainer containers:
+After setting up the environment, you'll need to download the cancer datasets from the Curated Cancer Cell Atlas (CCCA). These datasets form the foundation for the benchmarking analysis.
+For detailed instructions on downloading and processing the CCCA datasets, see the [CCCA Data Download Guide](ccca.md).
 
-```bash
-snakemake --configfile <path_to_your_config> --sdm apptainer -c <number_of_cores>
-```
-
-### Reproducing Paper Results
-
-To reproduce the results from the paper using Docker containers:
+Quick start for downloading a test dataset:
 
 ```bash
-snakemake --configfile config/config_gbm.yml --sdm apptainer -c <number_of_cores>
-snakemake --configfile config/config_breast.yml --sdm apptainer -c <number_of_cores>
-snakemake --configfile config/config_scc.yml --sdm apptainer -c <number_of_cores>
-snakemake --configfile config/config_luad.yml --sdm apptainer -c <number_of_cores>
-```
-
-## Option 2: Conda Environments
-
-### Environment Setup
-
-Use the pre-configured environments from `envs/without_build/`:
-
-```bash
-conda env create -f envs/without_build/CanSig-R.yml
-conda env create -f envs/without_build/CanSig-python.yml
-conda env create -f envs/without_build/cansig-benchmark.yml
-```
-
-If you have trouble installing the enviorments with fixed builds, we also provide just the versions at `envs/with_build/`.
-The entire benchmark runs within the `cansig-benchmark` environment, while Snakemake automatically activates the other environments as needed:
-
-```bash
-conda activate cansig-benchmark
+python ccafetcher.py --metadata 3ca_test.csv --download-dir data/downloads --dataset-dir data/raw --sample 0 --fetch
 ```
 
 ### Running the Snakemake Pipeline
 
-Execute the pipeline with Conda environments:
+Once you have set up the environment and downloaded the necessary datasets, you can execute the benchmarking pipeline. The pipeline uses docker containers to ensure all methods run in isolated, reproducible environments.
+
+Execute the pipeline using docker containers:
 
 ```bash
-snakemake --configfile <path_to_your_config> --use-conda -c <number_of_cores>
+snakemake --configfile <path_to_your_config> --sdm apptainer -c <number_of_cores> 
 ```
+
+Replace `<path_to_your_config>` with your specific configuration file and `<number_of_cores>` with the number of CPU cores you want to allocate.
 
 ### Reproducing Paper Results
 
-To reproduce the results from the paper, run the following commands:
+To reproduce the specific results from the CanSig-benchmark paper, use the provided configuration files. The pipeline includes two main components: signature analysis and integration analysis.
 
+**Signature Analysis Pipeline:**
 ```bash
-snakemake --configfile config/config_gbm.yml -c <number_of_cores>
-snakemake --configfile config/config_breast.yml -c <number_of_cores>
-snakemake --configfile config/config_scc.yml -c <number_of_cores>
-snakemake --configfile config/config_luad.yml -c <number_of_cores>
+snakemake --configfile config/signatures/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s signatures.smk
 ```
 
-Replace `<number_of_cores>` with the desired number of CPU cores for parallel processing.
+**Integration Analysis Pipeline:**
+```bash
+snakemake --configfile config/integration/<config>.yaml --sdm apptainer --apptainer-args "\\-\\-nvccli" -c <number_of_cores> -s integration.smk
+```
+
+Replace `<config>` with the specific configuration file name you want to use. The `--nvccli` argument enables NVIDIA container support for GPU-accelerated methods.
+
+## Next Steps
+
+1. **Configure your analysis**: Examine the configuration files in `config/signatures/` and `config/integration/` to understand the available options
+3. **Analyze results**: Once done running your benchmark you can analyse the created data using the notebooks provided in ```figures/```

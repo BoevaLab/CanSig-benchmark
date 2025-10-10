@@ -10,7 +10,6 @@ import os
 import sys
 from pathlib import Path
 
-
 root_dir = Path(__file__).parents[2].absolute()
 print(root_dir)
 sys.path.insert(0, str(root_dir))
@@ -33,8 +32,8 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
 ]
-myst_enable_extensions = ["colon_fence"]
 
+myst_enable_extensions = ["colon_fence"]
 
 templates_path = ["_templates"]
 exclude_patterns = []
@@ -44,16 +43,13 @@ source_suffix = {
     ".md": "markdown",
 }
 
-
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "sphinx_book_theme"
 html_static_path = ["_static"]
 html_logo = "assets/imgs/logo.png"
-
 pygments_style = "default"
-
 
 for path in ["preprocessing", "metasig", "metrics"]:
     sys.path.insert(0, os.path.abspath("scripts"))
