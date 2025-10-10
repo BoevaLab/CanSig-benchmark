@@ -98,11 +98,3 @@ methods:
 
 ...
 ```
-
-
-## Dependencies
-
-If your method requires additional dependencies:
-1. Add them to the appropriate environment file
-2. Consider creating a separate conda environment if needed
-3. Add the `conda:` directive to your Snakefile rule

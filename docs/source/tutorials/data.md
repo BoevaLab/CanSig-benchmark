@@ -49,13 +49,34 @@ CanSig expects input data in `AnnData` (.h5ad) format with specific requirements
 
 ## Running the Pipeline
 
-Once your configuration is set up:
+Once your configuration is set up and you have prepared your data:
 
+### Environment Setup
+First, ensure you have the CanSig environment activated:
+```bash
+conda activate cansig
+```
+
+### Executing the Pipeline
 1. Place your configuration file in the root directory
-2. Run the pipeline using:
+2. Run the appropriate pipeline component using:
+
+   **For signature analysis:**
    ```bash
-   snakemake --configfile your_config.yml -c <number-of-cores>
+   snakemake --configfile your_config.yml --sdm apptainer -c <number-of-cores> -s signatures.smk
    ```
+
+   **For integration analysis:**
+   ```bash
+   snakemake --configfile your_config.yml --sdm apptainer -c <number-of-cores> -s integration.smk
+   ```
+
+   **For both (complete pipeline):**
+   ```bash
+   snakemake --configfile your_config.yml --sdm apptainer -c <number-of-cores>
+   ```
+
+Replace `<number-of-cores>` with the number of CPU cores you want to allocate to the pipeline.
 
 
 ## Output Structure

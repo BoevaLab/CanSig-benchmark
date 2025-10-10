@@ -35,10 +35,10 @@ Once you have set up the environment and downloaded the necessary datasets, you 
 Execute the pipeline using docker containers:
 
 ```bash
-snakemake --configfile <path_to_your_config> --sdm apptainer -c <number_of_cores> 
+snakemake --configfile <path_to_your_config> --sdm apptainer -c <number_of_cores> -s <snakemake_file>
 ```
 
-Replace `<path_to_your_config>` with your specific configuration file and `<number_of_cores>` with the number of CPU cores you want to allocate.
+Replace `<path_to_your_config>` with your specific configuration file, `<number_of_cores>` with the number of CPU cores you want to allocate and  `<snakemake_file>` with either `signatures.smk` or `integration.smk` depending on which part of the pipeline you wish to run.
 
 ### Reproducing Paper Results
 
@@ -58,5 +58,5 @@ Replace `<config>` with the specific configuration file name you want to use. Th
 
 ## Next Steps
 
-1. **Configure your analysis**: Examine the configuration files in `config/signatures/` and `config/integration/` to understand the available options
-3. **Analyze results**: Once done running your benchmark you can analyse the created data using the notebooks provided in ```figures/```
+1. **Configure your analysis**: Examine the configuration files in `config/signatures/` and `config/integration/` to understand the available options and [tutorials](tutorials/index.md). 
+3. **Analyze results**: Once done running your benchmark you can analyze the created data using the notebooks provided in ```figures/```
